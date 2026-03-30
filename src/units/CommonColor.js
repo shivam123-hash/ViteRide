@@ -1,5 +1,5 @@
 const CommonColors = {
-    primary: '#11E99',
+    primary: '#311E99',
     secondary: '#FFBC00',
 
     background: '#F8FAFC',
