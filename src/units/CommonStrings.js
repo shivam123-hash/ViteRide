@@ -1,0 +1,16 @@
+export default {
+    appName: "VITERIDE",
+    title: "Enter your\nphone\nnumber",
+    subtitle: "The Silent Concierge awaits. Sign in to\nbegin your tranquil transition.",
+    mobileLabel: "MOBILE IDENTIFICATION",
+    phonePlaceholder: "00000 00000",
+    countryCode: "+91",
+    btnSendCode: "Send Verification Code",
+    alternatively: "ALTERNATIVELY",
+    btnGoogle: "Continue with Google",
+    footerPart1: "By continuing, you agree to our ",
+    footerTerms: "Terms of Service",
+    footerPart2: " and\nacknowledge you have read our ",
+    footerPrivacy: "Privacy Policy",
+    fullStop: ".",
+};

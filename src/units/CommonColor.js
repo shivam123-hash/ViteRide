@@ -1,18 +1,18 @@
 const CommonColors = {
-    primary: '#311E99',
+    primary: '#212121', // Dark almost-black button color
     secondary: '#FFBC00',
 
-    background: '#F8FAFC',
+    background: '#F7F8FA', 
     screenBg: '#F5F9FF',
     white: '#FFFFFF',
     black: '#000000',
 
-    textPrimary: '#172B4D',
-    textSecondary: '#5B6B82',
-    textLight: '#94A3B8',
+    textPrimary: '#000000', // Main dark text
+    textSecondary: '#555555', // Subtitles
+    textLight: '#A0A0A0', // Divider text, placeholders
 
-    border: '#E6EDF7',
-    inputBg: '#F9FAFB',
+    border: '#E5E5E5', // Borders, dividers
+    inputBg: '#FFFFFF', // White background for inputs
     card: '#FFFFFF',
 
     success: '#16A34A',
@@ -20,7 +20,7 @@ const CommonColors = {
     warning: '#F59E0B',
     info: '#0EA5E9',
 
-    shadow: 'rgba(0,0,0,0.08)',
+    shadow: 'rgba(0,0,0,0.05)', // Soft shadow for input wrapper
     overlay: 'rgba(0,0,0,0.4)',
 };
 
