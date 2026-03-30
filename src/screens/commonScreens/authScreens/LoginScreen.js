@@ -3,7 +3,6 @@ import {
     StyleSheet,
     Text,
     View,
-    TouchableOpacity,
     KeyboardAvoidingView,
     Platform,
 } from "react-native";
@@ -28,9 +27,6 @@ const LoginScreen = () => {
                 style={styles.innerContainer}
             >
                 <View style={styles.header}>
-                    <TouchableOpacity activeOpacity={0.7}>
-                        <Ionicons name="arrow-back" size={metrics.iconSize.high} color={colors.textPrimary} />
-                    </TouchableOpacity>
                     <Text style={styles.appName}>{strings.appName}</Text>
                 </View>
                 <View style={styles.titleContainer}>
@@ -57,7 +53,7 @@ const LoginScreen = () => {
                         title={strings.btnSendCode}
                         backgroundColor={colors.primary}
                         textColor={colors.white}
-                        height={metrics.windowHeight * 0.065}
+                        height={metrics.windowHeight * 0.075}
                         borderRadius={metrics.borderRadius.high * 1.5}
                         marginTop={metrics.margin.veryHigh}
                         elevation={2}
@@ -77,7 +73,7 @@ const LoginScreen = () => {
                         backgroundColor={colors.white}
                         textColor={colors.textPrimary}
                         height={metrics.windowHeight * 0.065}
-                        borderRadius={metrics.borderRadius.large}
+                        borderRadius={metrics.borderRadius.high * 1.3}
                         marginTop={metrics.margin.none}
                         elevation={0}
                         containerStyle={styles.googleBtnContainer}
@@ -87,15 +83,14 @@ const LoginScreen = () => {
                         }
                         onPress={() => console.log("Google Pressed")}
                     />
-                </View>
-                <View style={styles.footerContainer}>
-                    <Text style={styles.footerText}>
-                        {strings.footerPart1}
-                        <Text style={styles.linkText}>{strings.footerTerms}</Text>
-                        {strings.footerPart2}
-                        <Text style={styles.linkText}>{strings.footerPrivacy}</Text>
-                        {strings.fullStop}
-                    </Text>
+                    <View style={styles.signupContainer}>
+                        <Text style={styles.signupText}>
+                            {strings.dontHaveAccount}
+                            <Text style={styles.signupLink} onPress={() => console.log("Navigate to Create Account")}>
+                                {strings.createAccount}
+                            </Text>
+                        </Text>
+                    </View>
                 </View>
             </KeyboardAvoidingView>
         </SafeAreaView>
@@ -183,7 +178,6 @@ const getStyles = (colors, fonts, metrics) => StyleSheet.create({
         backgroundColor: "transparent",
         borderWidth: 0,
         paddingHorizontal: metrics.padding.none,
-        // borderRadius: metrics.borderRadius.extraHigh
     },
     overrideTextInput: {
         width: "100%",
@@ -239,5 +233,18 @@ const getStyles = (colors, fonts, metrics) => StyleSheet.create({
         color: colors.textPrimary,
         fontFamily: fonts.semiBold,
         textDecorationLine: "underline",
+    },
+    signupContainer: {
+        marginTop: metrics.margin. veryHigh,
+        alignItems: "center",
+    },
+    signupText: {
+        fontSize: RFValue(12),
+        fontFamily: fonts.medium,
+        color: colors.textSecondary,
+    },
+    signupLink: {
+        color: colors.primary, 
+        fontFamily: fonts.bold,
     },
 });
