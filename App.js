@@ -3,7 +3,7 @@ import { StatusBar, StyleSheet, useColorScheme } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { ThemeProvider } from './src/common/ThemeContest'; 
 import EditProfileScreen from './src/screens/commonScreens/profileScreeen/components/EditProfileScreen';
-import LoginScreen from './src/screens/commonScreens/authScreens/LoginScreen';
+import SelectRidesScreen from './src/screens/rider_screens/select_ride_screen/SelectRidesScreen';
 
 function App() {
   const isDarkMode = useColorScheme() === 'dark';
@@ -16,7 +16,7 @@ function App() {
         translucent={true} 
       />
       <ThemeProvider>
-        <EditProfileScreen  />
+        <SelectRidesScreen  />
       </ThemeProvider>
       
     </SafeAreaProvider>
