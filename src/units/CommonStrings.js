@@ -80,7 +80,102 @@ export default {
     suggestions: 'Suggestions',
     savedLocations: 'Saved Locations',
 
+    // select ride type screen
+    selectRideHeader: 'Select Ride',
+    vehicleTypes: 'Vehicle Types',
+    optionsAvailable: 'options available',
+    totalFare: 'Total Fare :',
+    confirmRide: 'Confirm Ride',
 
+
+    // ProposeFare screen
+    placeholderForFarePrice: "Please Enter Your Fare Price",
+    proposeFareHeader: 'Propose your fare',
+    proposeFareHeadline1: 'Set your',
+    proposeFareHeadline2: 'price.',
+    recommendedRange: 'Recommended Range',
+    broadcastRequest: 'Broadcast Request',
+    driverOffers: 'Driver Offers',
+    realTime: 'Real-time',
+    counterLabel: 'Counter',
+    matchedLabel: 'Matched',
+    acceptBtn: 'Accept',
+    declineBtn: 'Decline',
+    currencySymbol: '₹',
+    recommendedRangeValue: '₹320 – ₹380',
+
+
+
+    // Finding Rides screen
+    findingRideHeader: 'Finding your ride',
+    findingDriverTitle: 'Finding your driver…',
+    estimatedConnectionTime: 'Estimated connection time',
+    paymentLabel: 'Payment',
+    paymentValue: '•••• 4242',
+    serviceLabel: 'Service',
+    serviceValue: 'Premium XL',
+    cancelRequest: 'Cancel Request',
+    cancelRefundNote: 'You can cancel within the next 2 minutes for a full refund.',
+
+
+    //Book For Others Screen
+    bookForOthersHeader: 'Book for Others',
+    bookForOthersHeadline1: 'Book for',
+    bookForOthersHeadline2: 'Others',
+    bookForOthersSubtitle: 'Arrange a seamless journey for your guests and track their progress in real-time.',
+    bookingForSomeoneElse: 'Booking for someone else',
+    bookingToggleSubtitle: 'Toggle to manage their trip',
+    recipientNameLabel: 'Recipient Name',
+    recipientNamePlaceholder: 'Full name',
+    phoneLabel: 'Phone number',
+    phonePlaceholder: '98765 43210',
+    phoneCode: '+91',
+    tripNoteLabel: 'Trip Note (Optional)',
+    tripNotePlaceholder: 'Add a note for the driver about your guest',
+    premiumServiceLabel: 'Premium Service',
+    premiumServiceTitle: 'ViteRide Concierge',
+    continueBtn: 'Continue',
+    trackingNoteText: 'Your guest will receive a secure tracking link via SMS.',
+
+
+    //In Transit screen
+    inTransitHeader: 'ViteRide',
+    currentFareLabel: 'Current Fare',
+    currentFareValue: '₹245',
+    yourJourneyLabel: 'Your Journey',
+    arrivingInTitle: 'Arriving in 8 mins',
+    remainingDistance: '2.4 km',
+    remainingLabel: 'Remaining',
+    yourDriverLabel: 'Your Driver',
+    driverName: 'Alex',
+    driverRatingInTransit: '4.98',
+    vehicleLabel: 'Black Toyota Camry',
+    vehiclePlate: '6YZA23',
+    callBtn: 'Call',
+    chatBtn: 'Chat',
+    safetyFooterText: 'Ride protected by Onyx Safety Shield',
+
+    //TripSummaryScreen
+    tripSummaryHeader: 'Trip Summary',
+    tripSummaryBrand: 'ViteRide',
+    arrivalCompleteLabel: 'Arrival Complete',
+    rideCompletedTitle: 'Ride Completed',
+    driverNameSummary: 'Marcus Vance',
+    driverVehicleSummary: 'Black Obsidian • G-552 ONYX',
+    fareBreakdownLabel: 'Fare Breakdown',
+    baseFareLabel: 'Base Fare',
+    baseFareValue: '$12.50',
+    distanceFeeLabel: 'Distance Fee (14.2 mi)',
+    distanceFeeValue: '$28.40',
+    timeFeeLabel: 'Time Fee (22 min)',
+    timeFeeValue: '$8.80',
+    totalPaidLabel: 'Total Paid',
+    totalPaidValue: '$49.70',
+    ratingQuestion: 'How was your journey?',
+    rateDriverBtn: 'Rate Driver',
+    skipFeedbackBtn: 'Skip Feedback',
+    feedbackChips: ['Professional', 'Clean Car', 'Safe Driving', 'Great Conversation'],
 
 
 };
+

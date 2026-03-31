@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useMemo } from 'react';
 import {
     View,
@@ -9,6 +8,7 @@ import {
     StatusBar,
     Image,
     Animated,
+    PanResponder,
     Dimensions,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -16,310 +16,230 @@ import MaterialIcons from '@react-native-vector-icons/material-icons';
 import Ionicons from '@react-native-vector-icons/ionicons';
 import CommonColors from '../../../units/CommonColor';
 import CommonBtn from '../../../components/CommonBtn';
-import CommonStrings from "../../../units/CommonStrings";
-import { useTheme } from "../../../common/ThemeContest";
+import CommonStrings from '../../../units/CommonStrings';
+import { useTheme } from '../../../common/ThemeContest';
 import { RFValue } from 'react-native-responsive-fontsize';
+import RideCard from './components/RideCard';
+import CommonHeader from '../../../components/CommonHeader';
+import strings from '../../../units/CommonStrings';
 
-const { width } = Dimensions.get('window');
+const { height: SCREEN_HEIGHT } = Dimensions.get('window');
+
+const HEADER_HEIGHT = 60;
+const SAFE_AREA_TOP = 44;
+const AVAILABLE_HEIGHT = SCREEN_HEIGHT - SAFE_AREA_TOP - HEADER_HEIGHT;
+
+const SHEET_EXPANDED = SCREEN_HEIGHT * 0.55;
+const SHEET_COLLAPSED = 72;
 
 const RIDE_TYPES = [
-    {
-        id: 'economy',
-        label: 'Economy',
-        price: '$12.50',
-        eta: '3 min',
-        icon: 'directions-car',
-        description: 'Affordable everyday rides',
-    },
-    {
-        id: 'premium',
-        label: 'Premium',
-        price: '$24.00',
-        eta: '5 min',
-        icon: 'star',
-        description: 'Luxury comfort & style',
-        isDefault: true,
-    },
-    {
-        id: 'suv',
-        label: 'SUV',
-        price: '$35.20',
-        eta: '7 min',
-        icon: 'airport-shuttle',
-        description: 'Extra space for groups',
-    },
-    {
-        id: 'electric',
-        label: 'Electric',
-        price: '$15.75',
-        eta: '4 min',
-        icon: 'electric-car',
-        description: 'Eco-friendly zero emission',
-    },
+    { id: 'economy', label: 'Economy', price: '$12.50', eta: '3 min', icon: 'directions-car', description: 'Affordable everyday rides' },
+    { id: 'premium', label: 'Premium', price: '$24.00', eta: '5 min', icon: 'star', description: 'Luxury comfort & style', isDefault: true },
+    { id: 'suv', label: 'SUV', price: '$35.20', eta: '7 min', icon: 'airport-shuttle', description: 'Extra space for groups' },
+    { id: 'electric', label: 'Electric', price: '$15.75', eta: '4 min', icon: 'electric-car', description: 'Eco-friendly zero emission' },
 ];
 
-const RideCard = ({ item, isSelected, onPress, styles, metrics }) => {
-    const scale = useRef(new Animated.Value(1)).current;
-    
-    const handlePressIn = () =>
-        Animated.spring(scale, { toValue: 0.96, useNativeDriver: true }).start();
-    const handlePressOut = () =>
-        Animated.spring(scale, { toValue: 1, useNativeDriver: true }).start();
-
-    return (
-        <Animated.View style={{ transform: [{ scale }] }}>
-            <TouchableOpacity
-                style={[styles.card, isSelected && styles.cardSelected]}
-                onPress={() => onPress(item.id)}
-                onPressIn={handlePressIn}
-                onPressOut={handlePressOut}
-                activeOpacity={1}
-            >
-                {/* Icon */}
-                <View style={[styles.cardIconWrapper, isSelected && styles.cardIconWrapperSelected]}>
-                    <MaterialIcons
-                        name={item.icon}
-                        size={metrics.iconSize.veryHigh}
-                        color={isSelected ? CommonColors.white : CommonColors.primary}
-                    />
-                </View>
-
-                {/* Info */}
-                <View style={styles.cardInfo}>
-                    <Text style={[styles.cardLabel, isSelected && styles.cardLabelSelected]}>
-                        {item.label}
-                    </Text>
-                    <Text style={[styles.cardDescription, isSelected && styles.cardDescriptionSelected]}>
-                        {item.description}
-                    </Text>
-                </View>
-
-                {/* Right side */}
-                <View style={styles.cardRight}>
-                    <Text style={[styles.cardPrice, isSelected && styles.cardPriceSelected]}>
-                        {item.price}
-                    </Text>
-                    <View style={[styles.etaBadge, isSelected && styles.etaBadgeSelected]}>
-                        <MaterialIcons
-                            name="access-time"
-                            size={metrics.iconSize.tiny}
-                            color={isSelected ? CommonColors.primary : CommonColors.textSecondary}
-                        />
-                        <Text style={[styles.etaText, isSelected && styles.etaTextSelected]}>
-                            {item.eta}
-                        </Text>
-                    </View>
-                </View>
-
-                {/* Selected indicator dot */}
-                {isSelected && <View style={styles.selectedDot} />}
-            </TouchableOpacity>
-        </Animated.View>
-    );
-};
-
 const SelectRideScreen = ({ navigation }) => {
+
     const [selectedRide, setSelectedRide] = useState('premium');
-    const confirmScale = useRef(new Animated.Value(1)).current;
+    const [isExpanded, setIsExpanded] = useState(true);
+
+    const sheetHeightRef = useRef(new Animated.Value(SHEET_EXPANDED));
+    const lastHeight = useRef(SHEET_EXPANDED);
+    const dragStartHeight = useRef(SHEET_EXPANDED);
+    const panResponderRef = useRef(null);
 
     const { fonts, metrics } = useTheme();
-    // Wrap styles in useMemo so it efficiently injects global theme objects 
     const styles = useMemo(() => createStyles(fonts, metrics), [fonts, metrics]);
+
+    const sheetHeight = sheetHeightRef.current;
     const selectedData = RIDE_TYPES.find((r) => r.id === selectedRide);
 
-    const handleConfirmPressIn = () =>
-        Animated.spring(confirmScale, { toValue: 0.97, useNativeDriver: true }).start();
-    const handleConfirmPressOut = () =>
-        Animated.spring(confirmScale, { toValue: 1, useNativeDriver: true }).start();
-
-    const handleConfirm = () => {
-        // Navigate to next screen
-        // navigation.navigate('RideConfirmed', { ride: selectedData });
+    const snapTo = (toValue, expanded) => {
+        lastHeight.current = toValue;
+        setIsExpanded(expanded);
+        Animated.spring(sheetHeight, {
+            toValue,
+            useNativeDriver: false,
+            bounciness: 4,
+        }).start();
     };
+
+    if (panResponderRef.current === null) {
+        panResponderRef.current = PanResponder.create({
+            onMoveShouldSetPanResponder: (_, g) => Math.abs(g.dy) > 5,
+            onPanResponderGrant: () => {
+                dragStartHeight.current = lastHeight.current;
+            },
+            onPanResponderMove: (_, g) => {
+                const next = dragStartHeight.current - g.dy;
+                const clamped = Math.max(SHEET_COLLAPSED, Math.min(SHEET_EXPANDED, next));
+                sheetHeight.setValue(clamped);
+            },
+            onPanResponderRelease: (_, g) => {
+                const currentH = dragStartHeight.current - g.dy;
+                const midPoint = (SHEET_EXPANDED + SHEET_COLLAPSED) / 2;
+                snapTo(
+                    currentH > midPoint ? SHEET_EXPANDED : SHEET_COLLAPSED,
+                    currentH > midPoint,
+                );
+            },
+        });
+    }
+
+    const panResponder = panResponderRef.current;
+
+    const mapHeight = sheetHeight.interpolate({
+        inputRange: [SHEET_COLLAPSED, SHEET_EXPANDED],
+        outputRange: [
+            AVAILABLE_HEIGHT - SHEET_COLLAPSED - 12,
+            AVAILABLE_HEIGHT - SHEET_EXPANDED - 12,
+        ],
+        extrapolate: 'clamp',
+    });
 
     return (
         <SafeAreaView style={styles.safeArea}>
             <StatusBar barStyle="dark-content" backgroundColor={CommonColors.background} />
 
-            {/* ── Header ── */}
-            <View style={styles.header}>
+            <CommonHeader
+                title={strings.selectRideHeader}
+                onBackPress={() => navigation?.goBack()}
+            />
+
+            <TouchableOpacity
+                activeOpacity={1}
+                onPress={() => !isExpanded && snapTo(SHEET_EXPANDED, true)}
+            >
+                <Animated.View style={[styles.mapContainer, { height: mapHeight }]}>
+                    <Image
+                        source={{
+                            uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAmrWdngJFRkmm3BETQYBcWOOl_3UknouWOsqdj-KdqjB2NsfujRznetVcZAHf-XhvuJm4LPa-FIj6zhvuHsuJOlzZ_IfIX7mcOtaats_kZFJ-PaUpTn9Lfm8kjZA9eD3fqy-qiqbTlPA1_9Sgz2xKtw4aAuATezC9t7ScI7oSH0JVaWCUEzW8TgA5x3Lu9CEk9ba2MVcSXCNo9lgdq3o92aLlRyvcHZRX366A34NdbH8RtJFJZVELMu97CpavnByr5tVvk5nuurKSy',
+                        }}
+                        style={styles.mapImage}
+                        resizeMode="cover"
+                    />
+                    <View style={styles.mapOverlay} />
+                    <View style={styles.routeLine} />
+
+                    <View style={[styles.pin, styles.pinOrigin]}>
+                        <View style={styles.pinInner} />
+                        <View style={styles.pinRing} />
+                    </View>
+
+                    <View style={[styles.pin, styles.pinDest]}>
+                        <MaterialIcons
+                            name="location-on"
+                            size={metrics.iconSize.veryHigh}
+                            color={CommonColors.primary}
+                        />
+                    </View>
+
+                    <View style={styles.tripChip}>
+                        <MaterialIcons name="straighten" size={14} color={CommonColors.textSecondary} />
+                        <Text style={styles.tripChipText}>4.2 km · ~18 min</Text>
+                    </View>
+
+                    {!isExpanded && (
+                        <View style={styles.expandHint}>
+                            <MaterialIcons name="fullscreen" size={16} color={CommonColors.white} />
+                            <Text style={styles.expandHintText}>Tap to expand</Text>
+                        </View>
+                    )}
+                </Animated.View>
+            </TouchableOpacity>
+
+            <Animated.View style={[styles.bottomSheet, { height: sheetHeight }]}>
+
                 <TouchableOpacity
-                    style={styles.backButton}
-                    onPress={() => navigation?.goBack()}
-                    activeOpacity={0.7}
+                    onPress={() => snapTo(
+                        isExpanded ? SHEET_COLLAPSED : SHEET_EXPANDED,
+                        !isExpanded,
+                    )}
+                    activeOpacity={0.8}
+                    style={styles.handleArea}
+                    {...panResponder.panHandlers}
                 >
-                    <MaterialIcons name="arrow-back" size={metrics.iconSize.high} color={CommonColors.primary} />
+                    <View style={styles.sheetHandle} />
                 </TouchableOpacity>
-                <Text style={styles.headerTitle}>Select Ride</Text>
-                <View style={styles.headerRight} />
-            </View>
 
-            {/* ── Map Preview ── */}
-            <View style={styles.mapContainer}>
-                <Image
-                    source={{
-                        uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAmrWdngJFRkmm3BETQYBcWOOl_3UknouWOsqdj-KdqjB2NsfujRznetVcZAHf-XhvuJm4LPa-FIj6zhvuHsuJOlzZ_IfIX7mcOtaats_kZFJ-PaUpTn9Lfm8kjZA9eD3fqy-qiqbTlPA1_9Sgz2xKtw4aAuATezC9t7ScI7oSH0JVaWCUEzW8TgA5x3Lu9CEk9ba2MVcSXCNo9lgdq3o92aLlRyvcHZRX366A34NdbH8RtJFJZVELMu97CpavnByr5tVvk5nuurKSy',
-                    }}
-                    style={styles.mapImage}
-                    resizeMode="cover"
-                />
-                {/* Grayscale overlay */}
-                <View style={styles.mapOverlay} />
+                {isExpanded && (
+                    <>
+                        <View style={styles.sectionHeader}>
+                            <Text style={styles.sectionLabel}>{strings.vehicleTypes}</Text>
+                            <Text style={styles.sectionSub}>
+                                {RIDE_TYPES.length} {strings.optionsAvailable}
+                            </Text>
+                        </View>
 
-                {/* Route line decoration */}
-                <View style={styles.routeLine} />
+                        <ScrollView
+                            style={styles.rideList}
+                            showsVerticalScrollIndicator={false}
+                            contentContainerStyle={styles.rideListContent}
+                        >
+                            {RIDE_TYPES.map((item) => (
+                                <RideCard
+                                    key={item.id}
+                                    item={item}
+                                    isSelected={selectedRide === item.id}
+                                    onPress={setSelectedRide}
+                                    styles={styles}
+                                    metrics={metrics}
+                                />
+                            ))}
+                        </ScrollView>
 
-                {/* Origin pin */}
-                <View style={[styles.pin, styles.pinOrigin]}>
-                    <View style={styles.pinInner} />
-                    <View style={styles.pinRing} />
-                </View>
+                        <View style={styles.priceSummary}>
+                            <Text style={styles.priceSummaryLabel}>{strings.totalFare}</Text>
+                            <Text style={styles.priceSummaryValue}>{selectedData?.price}</Text>
+                        </View>
 
-                {/* Destination pin */}
-                <View style={[styles.pin, styles.pinDest]}>
-                    <MaterialIcons name="location-on" size={metrics.iconSize.veryHigh} color={CommonColors.primary} />
-                </View>
-
-                {/* Trip info chip */}
-                <View style={styles.tripChip}>
-                    <MaterialIcons name="straighten" size={14} color={CommonColors.textSecondary} />
-                    <Text style={styles.tripChipText}>4.2 km · ~18 min</Text>
-                </View>
-            </View>
-
-            {/* ── Bottom Sheet ── */}
-            <View style={styles.bottomSheet}>
-                {/* Handle */}
-                <View style={styles.sheetHandle} />
-
-                {/* Section Label */}
-                <View style={styles.sectionHeader}>
-                    <Text style={styles.sectionLabel}>Vehicle Types</Text>
-                    <Text style={styles.sectionSub}>{RIDE_TYPES.length} options available</Text>
-                </View>
-
-                {/* Ride List */}
-                <ScrollView
-                    style={styles.rideList}
-                    showsVerticalScrollIndicator={false}
-                    contentContainerStyle={styles.rideListContent}
-                >
-                    {RIDE_TYPES.map((item) => (
-                        <RideCard
-                            key={item.id}
-                            item={item}
-                            isSelected={selectedRide === item.id}
-                            onPress={setSelectedRide}
-                            styles={styles}
-                            metrics={metrics}
+                        <CommonBtn
+                            title={CommonStrings.confirmRide}
+                            backgroundColor={CommonColors.primary}
+                            textColor={CommonColors.white}
+                            height={metrics.windowHeight * 0.065}
+                            borderRadius={metrics.borderRadius.high}
+                            marginTop={metrics.margin.medium}
+                            elevation={2}
+                            textStyle={styles.btnTextStyle}
+                            rightComponent={
+                                <Ionicons
+                                    name="chevron-forward"
+                                    size={metrics.iconSize.medium}
+                                    color={CommonColors.white}
+                                    style={styles.btnIcon}
+                                />
+                            }
+                            onPress={() => console.log('Confirm pressed')}
                         />
-                    ))}
-                </ScrollView>
-
-                {/* Price Summary */}
-                <View style={styles.priceSummary}>
-                    <View>
-                        <Text style={styles.priceSummaryLabel}>Total Fare</Text>
-                        <Text style={styles.priceSummaryValue}>{selectedData?.price}</Text>
-                    </View>
-                    <View style={styles.priceSummaryRight}>
-                        <MaterialIcons name="credit-card" size={metrics.iconSize.low} color={CommonColors.textSecondary} />
-                        <Text style={styles.priceSummaryPayment}>••••  4242</Text>
-                    </View>
-                </View>
-
-                {/* Confirm Button */}
-                <CommonBtn
-                    title={CommonStrings.btnSendCode}
-                    backgroundColor={CommonColors.primary}
-                    textColor={CommonColors.white}
-                    height={metrics.windowHeight * 0.065}
-                    borderRadius={metrics.borderRadius.high}
-                    marginTop={metrics.margin.veryHigh}
-                    elevation={2}
-                    textStyle={styles.btnTextStyle}
-                    rightComponent={
-                        <Ionicons 
-                            name="chevron-forward" 
-                            size={metrics.iconSize.medium} 
-                            color={CommonColors.white} 
-                            style={styles.btnIcon} 
-                        />
-                    }
-                    onPress={() => console.log("Confirm button pressed")}
-                />
-
-            </View>
+                    </>
+                )}
+            </Animated.View>
         </SafeAreaView>
     );
 };
-
-// Extracted styles to take dynamically injected fonts and metrics
 const createStyles = (fonts, metrics) => StyleSheet.create({
+
     safeArea: {
         flex: 1,
         backgroundColor: CommonColors.background,
     },
 
-    btnTextStyle: {
-        fontSize: RFValue(14),
-        fontFamily: fonts.semiBold,
-    },
-    btnIcon: {
-        marginLeft: metrics.margin.low,
-    },
-
-    // Header
-    header: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        paddingHorizontal: metrics.padding.high,
-        paddingVertical: metrics.padding.medium,
-        backgroundColor: CommonColors.background,
-    },
-    backButton: {
-        width: metrics.margin.massive,
-        height: metrics.margin.massive,
-        borderRadius: metrics.borderRadius.veryHigh,
-        backgroundColor: CommonColors.white,
-        alignItems: 'center',
-        justifyContent: 'center',
-        shadowColor: CommonColors.black,
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.06,
-        shadowRadius: 8,
-        elevation: 2,
-    },
-    headerTitle: {
-        fontFamily: fonts.bold,
-        fontSize: RFValue(20),
-        letterSpacing: -0.4,
-        color: CommonColors.primary,
-    },
-    headerRight: {
-        width: metrics.margin.massive,
-    },
-
-    // Map
     mapContainer: {
-        flex: 1,
         marginHorizontal: metrics.margin.high,
-        marginBottom: metrics.margin.none,
         borderRadius: metrics.borderRadius.veryHigh,
         overflow: 'hidden',
         backgroundColor: CommonColors.screenBg,
-        minHeight: 180,
-        maxHeight: 220,
     },
     mapImage: {
         width: '100%',
         height: '100%',
-        opacity: 0.25,
+        opacity: 0.3,
     },
     mapOverlay: {
         ...StyleSheet.absoluteFillObject,
-        backgroundColor: 'rgba(245,245,245,0.3)',
+        backgroundColor: 'rgba(245,245,245,0.25)',
     },
     routeLine: {
         position: 'absolute',
@@ -338,11 +258,11 @@ const createStyles = (fonts, metrics) => StyleSheet.create({
     },
     pinOrigin: {
         top: '25%',
-        left: '46%',
+        left: '46%'
     },
     pinDest: {
         bottom: '20%',
-        left: '43%',
+        left: '43%'
     },
     pinInner: {
         width: 12,
@@ -369,10 +289,6 @@ const createStyles = (fonts, metrics) => StyleSheet.create({
         paddingHorizontal: metrics.padding.medium,
         paddingVertical: metrics.padding.low,
         borderRadius: metrics.borderRadius.veryHigh,
-        shadowColor: CommonColors.black,
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.08,
-        shadowRadius: 12,
         elevation: 3,
     },
     tripChipText: {
@@ -380,13 +296,31 @@ const createStyles = (fonts, metrics) => StyleSheet.create({
         fontSize: RFValue(12),
         color: CommonColors.textSecondary,
     },
-
-    // Bottom Sheet
+    expandHint: {
+        position: 'absolute',
+        bottom: metrics.margin.medium,
+        left: metrics.margin.medium,
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 6,
+        backgroundColor: 'rgba(0,0,0,0.45)',
+        paddingHorizontal: metrics.padding.medium,
+        paddingVertical: metrics.padding.low,
+        borderRadius: metrics.borderRadius.veryHigh,
+    },
+    expandHintText: {
+        fontFamily: fonts.regular,
+        fontSize: RFValue(11),
+        color: CommonColors.white,
+    },
     bottomSheet: {
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        right: 0,
         backgroundColor: CommonColors.white,
         borderTopLeftRadius: metrics.borderRadius.extraHigh,
         borderTopRightRadius: metrics.borderRadius.extraHigh,
-        paddingTop: metrics.padding.medium,
         paddingHorizontal: metrics.padding.high,
         paddingBottom: metrics.padding.veryHigh,
         shadowColor: CommonColors.black,
@@ -394,15 +328,17 @@ const createStyles = (fonts, metrics) => StyleSheet.create({
         shadowOpacity: 0.06,
         shadowRadius: 30,
         elevation: 20,
-        marginTop: metrics.margin.medium,
+        overflow: 'hidden',
+    },
+    handleArea: {
+        alignItems: 'center',
+        paddingVertical: metrics.padding.medium,
     },
     sheetHandle: {
-        width: 36,
+        width: 40,
         height: 4,
         borderRadius: metrics.borderRadius.tiny,
         backgroundColor: CommonColors.border,
-        alignSelf: 'center',
-        marginBottom: metrics.margin.veryHigh,
     },
     sectionHeader: {
         flexDirection: 'row',
@@ -422,17 +358,14 @@ const createStyles = (fonts, metrics) => StyleSheet.create({
         fontSize: RFValue(12),
         color: CommonColors.textLight,
     },
-
-    // Ride List
     rideList: {
-        maxHeight: 280,
+        maxHeight: 260
+
     },
     rideListContent: {
         gap: metrics.margin.low,
-        paddingBottom: metrics.padding.tiny,
+        paddingBottom: metrics.padding.tiny
     },
-
-    // Ride Card
     card: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -442,12 +375,12 @@ const createStyles = (fonts, metrics) => StyleSheet.create({
         gap: metrics.margin.medium,
         borderWidth: 2,
         borderColor: 'transparent',
-        position: 'relative',
         overflow: 'hidden',
     },
     cardSelected: {
         backgroundColor: CommonColors.primary,
-        borderColor: CommonColors.primary,
+        borderColor: CommonColors.primary
+
     },
     cardIconWrapper: {
         width: 52,
@@ -456,43 +389,46 @@ const createStyles = (fonts, metrics) => StyleSheet.create({
         backgroundColor: CommonColors.white,
         alignItems: 'center',
         justifyContent: 'center',
-        flexShrink: 0,
+        flexShrink: 0
     },
     cardIconWrapperSelected: {
-        backgroundColor: 'rgba(255,255,255,0.15)',
+        backgroundColor: 'rgba(255,255,255,0.15)'
     },
     cardInfo: {
-        flex: 1,
+        flex: 1
+
     },
     cardLabel: {
         fontFamily: fonts.bold,
         fontSize: RFValue(15),
         color: CommonColors.primary,
-        marginBottom: 2,
+        marginBottom: 2
+
     },
     cardLabelSelected: {
-        color: CommonColors.white,
+        color: CommonColors.white
+
     },
     cardDescription: {
         fontFamily: fonts.regular,
         fontSize: RFValue(12),
-        color: CommonColors.textSecondary,
+        color: CommonColors.textSecondary
     },
     cardDescriptionSelected: {
-        color: 'rgba(255,255,255,0.65)',
+        color: 'rgba(255,255,255,0.65)'
     },
     cardRight: {
         alignItems: 'flex-end',
-        gap: metrics.margin.tiny,
+        gap: metrics.margin.tiny
     },
     cardPrice: {
         fontFamily: fonts.bold,
         fontSize: RFValue(17),
         color: CommonColors.primary,
-        letterSpacing: -0.3,
+        letterSpacing: -0.3
     },
     cardPriceSelected: {
-        color: CommonColors.white,
+        color: CommonColors.white
     },
     etaBadge: {
         flexDirection: 'row',
@@ -501,18 +437,18 @@ const createStyles = (fonts, metrics) => StyleSheet.create({
         backgroundColor: CommonColors.white,
         paddingHorizontal: metrics.padding.low,
         paddingVertical: 3,
-        borderRadius: metrics.borderRadius.veryHigh,
+        borderRadius: metrics.borderRadius.veryHigh
     },
     etaBadgeSelected: {
-        backgroundColor: 'rgba(255,255,255,0.2)',
+        backgroundColor: 'rgba(255,255,255,0.2)'
     },
     etaText: {
         fontFamily: fonts.semiBold,
         fontSize: RFValue(11),
-        color: CommonColors.textSecondary,
+        color: CommonColors.textSecondary
     },
     etaTextSelected: {
-        color: CommonColors.white,
+        color: CommonColors.white
     },
     selectedDot: {
         position: 'absolute',
@@ -521,10 +457,8 @@ const createStyles = (fonts, metrics) => StyleSheet.create({
         width: 7,
         height: 7,
         borderRadius: 4,
-        backgroundColor: 'rgba(255,255,255,0.5)',
+        backgroundColor: 'rgba(255,255,255,0.5)'
     },
-
-    // Price Summary
     priceSummary: {
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -536,62 +470,23 @@ const createStyles = (fonts, metrics) => StyleSheet.create({
         marginBottom: metrics.margin.medium,
     },
     priceSummaryLabel: {
-        fontFamily: fonts.regular,
-        fontSize: RFValue(12),
-        color: CommonColors.textLight,
-        marginBottom: 2,
+        fontFamily: fonts.bold,
+        fontSize: RFValue(18),
+        color: CommonColors.textSecondary
     },
     priceSummaryValue: {
         fontFamily: fonts.bold,
         fontSize: RFValue(22),
         color: CommonColors.primary,
-        letterSpacing: -0.5,
+        letterSpacing: -0.5
     },
-    priceSummaryRight: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: metrics.margin.low,
-        backgroundColor: CommonColors.screenBg,
-        paddingHorizontal: metrics.padding.medium,
-        paddingVertical: metrics.padding.medium,
-        borderRadius: metrics.borderRadius.medium,
+    btnTextStyle: {
+        fontSize: RFValue(14),
+        fontFamily: fonts.semiBold
     },
-    priceSummaryPayment: {
-        fontFamily: fonts.semiBold,
-        fontSize: RFValue(13),
-        color: CommonColors.textSecondary,
-    },
+    btnIcon: {
+        marginLeft: metrics.margin.low
 
-    // Confirm Button
-    confirmButton: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: CommonColors.primary,
-        height: 60,
-        borderRadius: metrics.borderRadius.high,
-        shadowColor: CommonColors.primary,
-        shadowOffset: { width: 0, height: 8 },
-        shadowOpacity: 0.25,
-        shadowRadius: 20,
-        elevation: 8,
-        position: 'relative',
-    },
-    confirmButtonText: {
-        fontFamily: fonts.bold,
-        fontSize: RFValue(16),
-        color: CommonColors.white,
-        letterSpacing: 0.2,
-    },
-    confirmArrow: {
-        position: 'absolute',
-        right: 20,
-        width: 36,
-        height: 36,
-        borderRadius: 18,
-        backgroundColor: CommonColors.white,
-        alignItems: 'center',
-        justifyContent: 'center',
     },
 });
 

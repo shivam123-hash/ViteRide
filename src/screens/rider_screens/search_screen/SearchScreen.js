@@ -142,8 +142,6 @@ const createStyles = (fonts, metrics) => StyleSheet.create({
         flex: 1,
         backgroundColor: CommonColors.background,
     },
-
-    // Header
     header: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -162,8 +160,6 @@ const createStyles = (fonts, metrics) => StyleSheet.create({
         letterSpacing: -0.4,
         color: CommonColors.primary,
     },
-
-    // Scroll
     scroll: {
         flex: 1,
     },
@@ -171,22 +167,17 @@ const createStyles = (fonts, metrics) => StyleSheet.create({
         paddingHorizontal: metrics.padding.veryHigh,
         paddingBottom: metrics.padding.massive,
     },
-
-    // Hero
     heroSection: {
         marginTop: metrics.margin.veryHigh,
         marginBottom: metrics.margin.veryHigh * 1.15,
     },
-
     heroTitle: {
         fontFamily: fonts.bold,
         fontSize: RFValue(48),
         letterSpacing: -1.5,
         color: CommonColors.primary,
         lineHeight: RFValue(54),
-
     },
-    // Search
     searchWrapper: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -201,7 +192,6 @@ const createStyles = (fonts, metrics) => StyleSheet.create({
         shadowRadius: metrics.borderRadius.extraHigh,
         elevation: 4,
     },
-
     searchInput: {
         flex: 1,
         fontFamily: fonts.regular,
@@ -210,8 +200,6 @@ const createStyles = (fonts, metrics) => StyleSheet.create({
         padding: metrics.padding.none,
         margin: metrics.margin.none,
     },
-
-    // Section
     section: {
         marginTop: metrics.margin.extraHigh,
     },
@@ -227,8 +215,6 @@ const createStyles = (fonts, metrics) => StyleSheet.create({
     suggestionList: {
         gap: metrics.padding.low,
     },
-
-    // Map Preview
     mapPreview: {
         marginTop: metrics.margin.massive,
         height: metrics.windowHeight * 0.2,
