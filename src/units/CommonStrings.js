@@ -73,4 +73,14 @@ export default {
     cafeTitle: "The Grind Ritual",
     cafeTime: "Visited yesterday",
 
+
+    //searchScreen
+    searchTitle: 'Serach',
+    whereTo: 'Where to?',
+    suggestions: 'Suggestions',
+    savedLocations: 'Saved Locations',
+
+
+
+
 };

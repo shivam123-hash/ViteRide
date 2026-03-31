@@ -1,5 +1,5 @@
 // src/components/TopAppBar.js
-import React from 'react';
+import React,{useMemo} from 'react';
 import {
     View,
     Text,
@@ -11,19 +11,24 @@ import {
 import MaterialIcons from '@react-native-vector-icons/material-icons';
 import CommonColors from '../../../../units/CommonColor';
 import CommonStrings from '../../../../units/CommonStrings';
+import { useTheme } from "../../../../common/ThemeContest";
+import { RFValue } from 'react-native-responsive-fontsize';
 
-const TopAppBar = ({ onMenuPress }) => {
+const TopAppBar = ({ onMenuPress }) => { 
+    const { fonts, metrics } = useTheme();
+        const styles = useMemo(() => createStyles(fonts, metrics), [fonts, metrics]);
+   
     return (
         <View style={styles.container}>
             <StatusBar barStyle="dark-content" backgroundColor={CommonColors.background} />
             <View style={styles.leftSection}>
-                <TouchableOpacity
+                {/* <TouchableOpacity
                     style={styles.menuButton}
                     onPress={onMenuPress}
                     activeOpacity={0.7}
                 >
-                    <MaterialIcons name="menu" size={26} color={CommonColors.primary} />
-                </TouchableOpacity>
+                    <MaterialIcons name="menu" size={metrics.iconSize.veryHigh} color={CommonColors.primary} />
+                </TouchableOpacity> */}
                 <Text style={styles.logo}>{CommonStrings.appName}</Text>
             </View>
 
@@ -40,45 +45,44 @@ const TopAppBar = ({ onMenuPress }) => {
     );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (fonts, metrics) =>  StyleSheet.create({
     container: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        paddingHorizontal: 24,
-        paddingVertical: 16,
+        paddingHorizontal: metrics.padding.veryHigh,
+        paddingVertical: metrics.padding.high,
         backgroundColor: CommonColors.background,
-        zIndex: 50,
+        zIndex: RFValue(50),
     },
     leftSection: {
         flexDirection: 'row',
         alignItems: 'center',
-        gap: 14,
+        gap:RFValue(14),
     },
     menuButton: {
-        padding: 4,
+        padding: metrics.padding.tiny,
     },
     menuIcon: {
-        gap: 4,
+        gap: RFValue(4),
         alignItems: 'flex-end',
     },
     menuLine: {
         height: 2,
         width: 22,
         backgroundColor: CommonColors.primary,
-        borderRadius: 2,
+        borderRadius: metrics.borderRadius.tiny,
     },
     logo: {
-        fontFamily: 'Manrope-ExtraBold',
-        fontWeight: '900',
-        fontSize: 22,
+        fontFamily: fonts.bold,
+        fontSize: RFValue(22),
         letterSpacing: -0.8,
         color: CommonColors.primary
     },
     avatarWrapper: {
-        width: 40,
-        height: 40,
-        borderRadius: 20,
+        width: metrics.windowWidth * 0.12,
+        height: metrics.windowWidth * 0.12,
+        borderRadius:  metrics.borderRadius.veryHigh,
         backgroundColor: CommonColors.background,
         overflow: 'hidden',
         borderWidth: 1,

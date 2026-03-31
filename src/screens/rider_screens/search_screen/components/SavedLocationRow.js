@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef,useMemo } from 'react';
 import {
     View,
     Text,
@@ -8,11 +8,15 @@ import {
 } from 'react-native';
 import MaterialIcons from '@react-native-vector-icons/material-icons';
 import CommonColors from '../../../../units/CommonColor';
+import { useTheme } from "../../../../common/ThemeContest";
+import { RFValue } from 'react-native-responsive-fontsize';
 
 
-
-const SavedLocationRow = ({ item, onPress, isLast }) => (
-    <TouchableOpacity
+const SavedLocationRow = ({ item, onPress, isLast }) => {
+     const { fonts, metrics } = useTheme();
+            const styles = useMemo(() => createStyles(fonts, metrics), [fonts, metrics]);
+       
+   return ( <TouchableOpacity
         style={[styles.savedRow, !isLast && styles.savedRowBorder]}
         onPress={() => onPress?.(item)}
         activeOpacity={0.7}
@@ -25,30 +29,30 @@ const SavedLocationRow = ({ item, onPress, isLast }) => (
             </View>
         </View>
         <MaterialIcons name="chevron-right" size={22} color={CommonColors.border} />
-    </TouchableOpacity>
-);
+    </TouchableOpacity>)
+};
 
 
 export default SavedLocationRow;
 
-const styles = StyleSheet.create({
+const createStyles = (fonts, metrics) =>StyleSheet.create({
     // Saved Locations
     savedList: {
         backgroundColor: CommonColors.white,
-        borderRadius: 16,
-        paddingHorizontal: 4,
+        borderRadius: metrics.borderRadius.high,
+        paddingHorizontal: metrics.padding.tiny,
         shadowColor: CommonColors.primary,
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.04,
-        shadowRadius: 12,
-        elevation: 2,
+        shadowRadius: metrics.borderRadius.medium,
+        elevation: RFValue(2),
     },
     savedRow: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        paddingVertical: 16,
-        paddingHorizontal: 16,
+        paddingVertical: metrics.padding.high,
+        paddingHorizontal: metrics.padding.high,
     },
     savedRowBorder: {
         borderBottomWidth: 1,
@@ -57,22 +61,21 @@ const styles = StyleSheet.create({
     savedRowLeft: {
         flexDirection: 'row',
         alignItems: 'center',
-        gap: 20,
+        gap:metrics.padding.high,
         flex: 1,
     },
     savedRowText: {
         flex: 1,
     },
     savedRowLabel: {
-        fontFamily: 'Manrope-Bold',
-        fontWeight: '700',
-        fontSize: 15,
+        fontSize: RFValue(12),
+        fontFamily: fonts.bold,
         color: CommonColors.primary,
         marginBottom: 2,
     },
     savedRowAddress: {
-        fontFamily: 'Inter',
-        fontSize: 12,
+        fontSize: RFValue(10),
+        fontFamily: fonts.regular,
         color: CommonColors.textSecondary,
     },
 });

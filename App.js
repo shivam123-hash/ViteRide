@@ -19,7 +19,7 @@ function App() {
         translucent={true}
       />
       <ThemeProvider>
-        <SelectRidesScreen  />
+        <SearchScreen  />
       </ThemeProvider>
 
     </SafeAreaProvider>

@@ -1,5 +1,5 @@
 // src/screens/rider_screens/home_screen/DestinationSearchScreen.js
-import React, {  useRef } from 'react';
+import React, {  useRef,useMemo } from 'react';
 import {
     View,
     Text,
@@ -9,8 +9,12 @@ import {
 } from 'react-native';
 import MaterialIcons from '@react-native-vector-icons/material-icons';
 import CommonColors from '../../../../units/CommonColor';
+import { useTheme } from "../../../../common/ThemeContest";
+import { RFValue } from 'react-native-responsive-fontsize';
 
 const SuggestionCard = ({ item, onPress }) => {
+     const { fonts, metrics } = useTheme();
+        const styles = useMemo(() => createStyles(fonts, metrics), [fonts, metrics]);
     const scale = useRef(new Animated.Value(1)).current;
 
     const handlePressIn = () =>
@@ -28,7 +32,7 @@ const SuggestionCard = ({ item, onPress }) => {
                 activeOpacity={1}
             >
                 <View style={styles.suggestionIcon}>
-                    <MaterialIcons name="location-on" size={22} color={CommonColors.primary} />
+                    <MaterialIcons name="location-on" size={metrics.iconSize.high} color={CommonColors.primary} />
                 </View>
                 <View style={styles.suggestionText}>
                     <Text style={styles.suggestionName} numberOfLines={1}>
@@ -45,26 +49,24 @@ const SuggestionCard = ({ item, onPress }) => {
 
 export default SuggestionCard;
 
-const styles = StyleSheet.create({
-    // Suggestion Cards
-   
+const createStyles = (fonts, metrics) =>StyleSheet.create({
     suggestionCard: {
         flexDirection: 'row',
         alignItems: 'center',
-        gap: 16,
+        gap: metrics.padding.high,
         backgroundColor: CommonColors.white,
-        borderRadius: 16,
-        padding: 18,
+        borderRadius: metrics.borderRadius.high,
+        padding: metrics.padding.high,
         shadowColor: CommonColors.primary,
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.04,
-        shadowRadius: 12,
+        shadowRadius: metrics.borderRadius.medium,
         elevation: 2,
     },
     suggestionIcon: {
-        width: 48,
-        height: 48,
-        borderRadius: 24,
+        width: metrics.windowWidth * 0.12,
+        height:metrics.windowWidth * 0.12,
+        borderRadius: metrics.borderRadius.medium,
         backgroundColor: CommonColors.screenBg,
         alignItems: 'center',
         justifyContent: 'center',
@@ -75,15 +77,15 @@ const styles = StyleSheet.create({
         overflow: 'hidden',
     },
     suggestionName: {
-        fontFamily: 'Manrope-Bold',
-        fontWeight: '700',
-        fontSize: 15,
+       
+        fontSize: RFValue(12),
+        fontFamily: fonts.bold,
         color: CommonColors.primary,
-        marginBottom: 2,
+        marginBottom: metrics.margin.tiny,
     },
     suggestionAddress: {
-        fontFamily: 'Inter',
-        fontSize: 13,
+        fontSize: RFValue(10),
+        fontFamily: fonts.regular,
         color: CommonColors.textSecondary,
     },
 

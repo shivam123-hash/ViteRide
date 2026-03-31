@@ -1,5 +1,5 @@
 // src/screens/HomeScreen.js
-import React, { useState } from 'react';
+import React, { useState ,useMemo} from 'react';
 import {
     View,
     StyleSheet,
@@ -13,8 +13,13 @@ import TopAppBar from './components/TopAppBar';
 import SearchBar from '../../../components/SearchBar';
 import QuickAccessChips from './components/QuickAccessChip';
 import CommonColors from '../../../units/CommonColor';
+import { useTheme } from "../../../common/ThemeContest";
+import { RFValue } from 'react-native-responsive-fontsize';
 
 const HomeScreen = () => {
+    const { fonts, metrics } = useTheme();
+        const styles = useMemo(() => createStyles(fonts, metrics), [fonts, metrics]);
+       
     const [searchText, setSearchText] = useState('');
     const [activeChip, setActiveChip] = useState('home');
 
@@ -65,7 +70,7 @@ const HomeScreen = () => {
     );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (fonts, metrics) =>  StyleSheet.create({
     safeArea: {
         flex: 1,
         backgroundColor: CommonColors.background,
@@ -75,13 +80,13 @@ const styles = StyleSheet.create({
     },
     content: {
         flex: 1,
-        paddingHorizontal: 24,
-        paddingTop: 16,
-        paddingBottom: 12,
-        zIndex: 10,
+        paddingHorizontal: metrics.padding.extraHigh,
+        paddingTop: metrics.padding.high,
+        paddingBottom:  metrics.padding.medium,
+        zIndex: RFValue(10),
     },
     searchSection: {
-        gap: 16,
+        gap: metrics.padding.high,
     },
     spacer: {
         flex: 1,

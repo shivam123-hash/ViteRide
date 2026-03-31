@@ -1,22 +1,23 @@
 // src/screens/rider_screens/home_screen/DestinationSearchScreen.js
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useMemo } from 'react';
 import {
     View,
     Text,
-    TextInput,
     TouchableOpacity,
     ScrollView,
     StyleSheet,
     StatusBar,
     Image,
-    Animated,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import MaterialIcons from '@react-native-vector-icons/material-icons';
 import CommonColors from '../../../units/CommonColor';
 import SearchBar from '../../../components/SearchBar';
+import CommonHeader from '../../../components/CommonHeader';
 import SuggestionCard from './components/SuggestionCard';
 import SavedLocationRow from './components/SavedLocationRow';
+import { useTheme } from "../../../common/ThemeContest";
+import { RFValue } from 'react-native-responsive-fontsize';
+import strings from "../../../units/CommonStrings";
 
 const SUGGESTIONS = [
     {
@@ -53,13 +54,11 @@ const SAVED_LOCATIONS = [
 ];
 
 
-
-
-
 const DestinationSearchScreen = ({ navigation }) => {
     const [searchText, setSearchText] = useState('');
     const inputRef = useRef(null);
-
+    const { fonts, metrics } = useTheme();
+    const styles = useMemo(() => createStyles(fonts, metrics), [fonts, metrics]);
     const filteredSuggestions = SUGGESTIONS.filter(
         (s) =>
             searchText === '' ||
@@ -74,16 +73,10 @@ const DestinationSearchScreen = ({ navigation }) => {
             <StatusBar barStyle="dark-content" backgroundColor={CommonColors.background} />
 
             {/* ── Header ── */}
-            <View style={styles.header}>
-                <TouchableOpacity
-                    style={styles.backButton}
-                    onPress={() => navigation?.goBack()}
-                    activeOpacity={0.7}
-                >
-                    <MaterialIcons name="arrow-back" size={24} color={CommonColors.primary} />
-                </TouchableOpacity>
-                <Text style={styles.headerTitle}>Set Destination</Text>
-            </View>
+            <CommonHeader
+                title={strings.searchTitle}
+                onBackPress={() => console.log("Go Back")}
+            />
 
             <ScrollView
                 style={styles.scroll}
@@ -92,7 +85,7 @@ const DestinationSearchScreen = ({ navigation }) => {
                 showsVerticalScrollIndicator={false}
             >
                 <View style={styles.heroSection}>
-                    <Text style={styles.heroTitle}>Where to?</Text>
+                    <Text style={styles.heroTitle}>{strings.whereTo}</Text>
                 </View>
 
                 <SearchBar
@@ -102,7 +95,7 @@ const DestinationSearchScreen = ({ navigation }) => {
                 />
 
                 <View style={styles.section}>
-                    <Text style={styles.sectionLabel}>Suggestions</Text>
+                    <Text style={styles.sectionLabel}>{strings.suggestions}</Text>
                     <View style={styles.suggestionList}>
                         {filteredSuggestions.map((item) => (
                             <SuggestionCard key={item.id} item={item} />
@@ -111,7 +104,7 @@ const DestinationSearchScreen = ({ navigation }) => {
                 </View>
 
                 <View style={styles.section}>
-                    <Text style={styles.sectionLabel}>Saved Locations</Text>
+                    <Text style={styles.sectionLabel}>{strings.savedLocations}</Text>
                     <View style={styles.savedList}>
                         {SAVED_LOCATIONS.map((item, index) => (
                             <SavedLocationRow
@@ -144,7 +137,7 @@ const DestinationSearchScreen = ({ navigation }) => {
 };
 
 
-const styles = StyleSheet.create({
+const createStyles = (fonts, metrics) => StyleSheet.create({
     safeArea: {
         flex: 1,
         backgroundColor: CommonColors.background,
@@ -154,23 +147,20 @@ const styles = StyleSheet.create({
     header: {
         flexDirection: 'row',
         alignItems: 'center',
-        paddingHorizontal: 24,
-        paddingTop: 16,
-        paddingBottom: 12,
+        paddingHorizontal: metrics.padding.veryHigh,
+        paddingTop: metrics.padding.high,
+        paddingBottom: metrics.padding.medium,
         backgroundColor: CommonColors.background,
     },
     backButton: {
-        padding: 4,
-        marginRight: 4,
+        padding: metrics.padding.tiny,
+        marginRight: metrics.margin.tiny,
     },
     headerTitle: {
-        fontFamily: 'Manrope-ExtraBold',
-        fontWeight: '800',
-        fontSize: 11,
-        letterSpacing: 2.5,
-        textTransform: 'uppercase',
+        fontFamily: fonts.bold,
+        fontSize: RFValue(20),
+        letterSpacing: -0.4,
         color: CommonColors.primary,
-        marginLeft: 16,
     },
 
     // Scroll
@@ -178,78 +168,77 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     scrollContent: {
-        paddingHorizontal: 24,
-        paddingBottom: 48,
+        paddingHorizontal: metrics.padding.veryHigh,
+        paddingBottom: metrics.padding.massive,
     },
 
     // Hero
     heroSection: {
-        marginTop: 24,
-        marginBottom: 28,
-    },
-    heroTitle: {
-        fontFamily: 'Manrope-ExtraBold',
-        fontWeight: '800',
-        fontSize: 48,
-        letterSpacing: -1.5,
-        color: CommonColors.primary,
-        lineHeight: 54,
+        marginTop: metrics.margin.veryHigh,
+        marginBottom: metrics.margin.veryHigh * 1.15,
     },
 
+    heroTitle: {
+        fontFamily: fonts.bold,
+        fontSize: RFValue(48),
+        letterSpacing: -1.5,
+        color: CommonColors.primary,
+        lineHeight: RFValue(54),
+
+    },
     // Search
     searchWrapper: {
         flexDirection: 'row',
         alignItems: 'center',
-        height: 64,
+        height: metrics.windowHeight * 0.065,
         backgroundColor: CommonColors.white,
-        borderRadius: 12,
-        paddingHorizontal: 20,
-        gap: 12,
+        borderRadius: metrics.borderRadius.medium,
+        paddingHorizontal: metrics.padding.veryHigh,
+        gap: metrics.padding.medium,
         shadowColor: CommonColors.primary,
         shadowOffset: { width: 0, height: 8 },
         shadowOpacity: 0.06,
-        shadowRadius: 24,
+        shadowRadius: metrics.borderRadius.extraHigh,
         elevation: 4,
     },
+
     searchInput: {
         flex: 1,
-        fontFamily: 'Inter',
-        fontWeight: '500',
-        fontSize: 16,
+        fontFamily: fonts.regular,
+        fontSize: RFValue(16),
         color: CommonColors.primary,
-        padding: 0,
-        margin: 0,
+        padding: metrics.padding.none,
+        margin: metrics.margin.none,
     },
 
     // Section
     section: {
-        marginTop: 36,
+        marginTop: metrics.margin.extraHigh,
     },
     sectionLabel: {
-        fontFamily: 'Inter',
-        fontWeight: '700',
-        fontSize: 10,
+        fontFamily: fonts.bold,
+        fontSize: RFValue(10),
         letterSpacing: 1.5,
         textTransform: 'uppercase',
         color: CommonColors.textLight,
-        marginBottom: 12,
-        marginLeft: 4,
+        marginBottom: metrics.margin.medium,
+        marginLeft: metrics.margin.tiny,
     },
     suggestionList: {
-        gap: 10,
+        gap: metrics.padding.low,
     },
 
     // Map Preview
     mapPreview: {
-        marginTop: 40,
-        height: 180,
-        borderRadius: 16,
+        marginTop: metrics.margin.massive,
+        height: metrics.windowHeight * 0.2,
+        borderRadius: metrics.borderRadius.high,
         overflow: 'hidden',
         backgroundColor: CommonColors.screenBg,
     },
     mapImage: {
-        width: '100%',
-        height: '100%',
+        width: metrics.windowWidth,
+        height: metrics.windowHeight,
         opacity: 0.3,
     },
     mapOverlay: {
@@ -262,19 +251,18 @@ const styles = StyleSheet.create({
         top: '50%',
         transform: [{ translateY: -22 }],
         backgroundColor: CommonColors.primary,
-        paddingHorizontal: 32,
-        paddingVertical: 14,
-        borderRadius: 12,
+        paddingHorizontal: metrics.padding.veryHigh,
+        paddingVertical: metrics.padding.medium,
+        borderRadius: metrics.borderRadius.medium,
         shadowColor: CommonColors.black,
         shadowOffset: { width: 0, height: 8 },
         shadowOpacity: 0.25,
-        shadowRadius: 20,
-        elevation: 8,
+        shadowRadius: metrics.borderRadius.veryHigh,
+        elevation: RFValue(8),
     },
     mapButtonText: {
-        fontFamily: 'Manrope-Bold',
-        fontWeight: '700',
-        fontSize: 13,
+        fontFamily: fonts.bold,
+        fontSize: RFValue(13),
         color: CommonColors.white,
         letterSpacing: 0.3,
     },
