@@ -12,6 +12,8 @@ import FindingRideScreen from './src/screens/rider_screens/finding_ride_screen/F
 import BookForOthersScreen from './src/screens/rider_screens/book_for_others/BookForOthersScreen';
 import InTransitScreen from './src/screens/rider_screens/in_transit_screen/InTransitScreen';
 import TripSummaryScreen from './src/screens/rider_screens/trip_summary/TripSummaryScreen';
+import { ThemeProvider } from './src/common/ThemeContest'; 
+import DriverRegistrationFlowScreen from './src/screens/commonScreens/authScreens/driverAuthScreens/DriverRegistrationFlowScreen';
 
 function App() {
   const isDarkMode = useColorScheme() === 'dark';
@@ -25,6 +27,7 @@ function App() {
       />
       <ThemeProvider>
         <TripSummaryScreen />
+        <DriverRegistrationFlowScreen />
       </ThemeProvider>
 
     </SafeAreaProvider>

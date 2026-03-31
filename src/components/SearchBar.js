@@ -1,4 +1,3 @@
-// src/components/SearchBar.js
 import React, { useState, useRef } from 'react';
 import {
     View,
@@ -9,7 +8,6 @@ import {
 } from 'react-native';
 import CommonColors from '../units/CommonColor';
 
-// Simple Search SVG icon as a View-based icon
 const SearchIcon = ({ color =CommonColors.background }) => (
     <View style={styles.searchIconWrapper}>
         <View style={[styles.searchCircle, { borderColor: color }]} />
@@ -60,9 +58,7 @@ const SearchBar = ({ value, onChangeText, onSubmit, placeholder = "Where to go?"
             ]}
         >
             <View style={styles.inner}>
-                {/* Search Icon */}
                 <SearchIcon color={isFocused ? CommonColors.primary : CommonColors.border} />
-
                 <TextInput
                     style={styles.input}
                     placeholder={placeholder}
@@ -133,8 +129,8 @@ const styles = StyleSheet.create({
         backgroundColor: CommonColors.primary,
         borderRadius: 1,
         position: 'absolute',
-        bottom: 1,
-        right: 1,
+        bottom: 5,
+        right: 3,
         transform: [{ rotate: '45deg' }],
     },
     input: {
