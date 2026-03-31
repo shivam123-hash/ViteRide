@@ -1,26 +1,29 @@
 const CommonColors = {
-    primary: '#212121', // Dark almost-black button color
+    primary: '#111111',
     secondary: '#FFBC00',
 
-    background: '#F7F8FA', 
-    screenBg: '#F5F9FF',
+    background: '#FFFFFF',
+    screenBg: '#F5F5F5',
     white: '#FFFFFF',
     black: '#000000',
 
-    textPrimary: '#000000', // Main dark text
-    textSecondary: '#555555', // Subtitles
-    textLight: '#A0A0A0', // Divider text, placeholders
+    textPrimary: '#111111',
+    textSecondary: '#747575',
+    textLight: '#A0A0A0',
 
-    border: '#E5E5E5', // Borders, dividers
-    inputBg: '#FFFFFF', // White background for inputs
     card: '#FFFFFF',
+    inputBg: '#F9F9F9',
+    border: '#E8E8E8',
+    chipInactive: '#F3F3F3',
+    chipActive: '#111111',
 
-    success: '#16A34A',
-    danger: '#EF4444',
+    success: '#4CAF50',
+    danger: '#F44336',
     warning: '#F59E0B',
     info: '#0EA5E9',
+    mapPolyline: '#000000',
 
-    shadow: 'rgba(0,0,0,0.05)', // Soft shadow for input wrapper
+    shadow: 'rgba(0,0,0,0.05)',
     overlay: 'rgba(0,0,0,0.4)',
 };
 
