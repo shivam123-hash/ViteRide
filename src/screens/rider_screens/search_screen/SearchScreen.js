@@ -14,7 +14,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import MaterialIcons from '@react-native-vector-icons/material-icons';
 import CommonColors from '../../../units/CommonColor';
-import SearchBar from './components/SearchBar';
+import SearchBar from '../../../components/SearchBar';
 import SuggestionCard from './components/SuggestionCard';
 import SavedLocationRow from './components/SavedLocationRow';
 

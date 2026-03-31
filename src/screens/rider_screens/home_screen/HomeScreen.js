@@ -10,7 +10,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import MapBackground from './components/MapBackground';
 import TopAppBar from './components/TopAppBar';
-import SearchBar from '../search_screen/components/SearchBar';
+import SearchBar from '../../../components/SearchBar';
 import QuickAccessChips from './components/QuickAccessChip';
 import CommonColors from '../../../units/CommonColor';
 

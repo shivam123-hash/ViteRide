@@ -1,5 +1,5 @@
-// src/screens/rider_screens/home_screen/SelectRideScreen.js
-import React, { useState, useRef } from 'react';
+
+import React, { useState, useRef, useMemo } from 'react';
 import {
     View,
     Text,
@@ -58,12 +58,9 @@ const RIDE_TYPES = [
     },
 ];
 
-
-const RideCard = ({ item, isSelected, onPress }) => {
+const RideCard = ({ item, isSelected, onPress, styles, metrics }) => {
     const scale = useRef(new Animated.Value(1)).current;
-
-    const { fonts, metrics } = useTheme();
-    const styles = style(fonts, CommonColors,metrics);
+    
     const handlePressIn = () =>
         Animated.spring(scale, { toValue: 0.96, useNativeDriver: true }).start();
     const handlePressOut = () =>
@@ -82,7 +79,7 @@ const RideCard = ({ item, isSelected, onPress }) => {
                 <View style={[styles.cardIconWrapper, isSelected && styles.cardIconWrapperSelected]}>
                     <MaterialIcons
                         name={item.icon}
-                        size={32}
+                        size={metrics.iconSize.veryHigh}
                         color={isSelected ? CommonColors.white : CommonColors.primary}
                     />
                 </View>
@@ -105,7 +102,7 @@ const RideCard = ({ item, isSelected, onPress }) => {
                     <View style={[styles.etaBadge, isSelected && styles.etaBadgeSelected]}>
                         <MaterialIcons
                             name="access-time"
-                            size={11}
+                            size={metrics.iconSize.tiny}
                             color={isSelected ? CommonColors.primary : CommonColors.textSecondary}
                         />
                         <Text style={[styles.etaText, isSelected && styles.etaTextSelected]}>
@@ -121,13 +118,13 @@ const RideCard = ({ item, isSelected, onPress }) => {
     );
 };
 
-
 const SelectRideScreen = ({ navigation }) => {
-    const { fonts, metrics } = useTheme();
-    const styles = style(fonts, CommonColors,metrics);
     const [selectedRide, setSelectedRide] = useState('premium');
     const confirmScale = useRef(new Animated.Value(1)).current;
 
+    const { fonts, metrics } = useTheme();
+    // Wrap styles in useMemo so it efficiently injects global theme objects 
+    const styles = useMemo(() => createStyles(fonts, metrics), [fonts, metrics]);
     const selectedData = RIDE_TYPES.find((r) => r.id === selectedRide);
 
     const handleConfirmPressIn = () =>
@@ -151,7 +148,7 @@ const SelectRideScreen = ({ navigation }) => {
                     onPress={() => navigation?.goBack()}
                     activeOpacity={0.7}
                 >
-                    <MaterialIcons name="arrow-back" size={24} color={CommonColors.primary} />
+                    <MaterialIcons name="arrow-back" size={metrics.iconSize.high} color={CommonColors.primary} />
                 </TouchableOpacity>
                 <Text style={styles.headerTitle}>Select Ride</Text>
                 <View style={styles.headerRight} />
@@ -180,7 +177,7 @@ const SelectRideScreen = ({ navigation }) => {
 
                 {/* Destination pin */}
                 <View style={[styles.pin, styles.pinDest]}>
-                    <MaterialIcons name="location-on" size={28} color={CommonColors.primary} />
+                    <MaterialIcons name="location-on" size={metrics.iconSize.veryHigh} color={CommonColors.primary} />
                 </View>
 
                 {/* Trip info chip */}
@@ -213,6 +210,8 @@ const SelectRideScreen = ({ navigation }) => {
                             item={item}
                             isSelected={selectedRide === item.id}
                             onPress={setSelectedRide}
+                            styles={styles}
+                            metrics={metrics}
                         />
                     ))}
                 </ScrollView>
@@ -224,7 +223,7 @@ const SelectRideScreen = ({ navigation }) => {
                         <Text style={styles.priceSummaryValue}>{selectedData?.price}</Text>
                     </View>
                     <View style={styles.priceSummaryRight}>
-                        <MaterialIcons name="credit-card" size={16} color={CommonColors.textSecondary} />
+                        <MaterialIcons name="credit-card" size={metrics.iconSize.low} color={CommonColors.textSecondary} />
                         <Text style={styles.priceSummaryPayment}>••••  4242</Text>
                     </View>
                 </View>
@@ -239,11 +238,15 @@ const SelectRideScreen = ({ navigation }) => {
                     marginTop={metrics.margin.veryHigh}
                     elevation={2}
                     textStyle={styles.btnTextStyle}
-
                     rightComponent={
-                        <Ionicons name="chevron-forward" size={metrics.iconSize.regular} color={CommonColors.primary} style={styles.btnIcon} />
+                        <Ionicons 
+                            name="chevron-forward" 
+                            size={metrics.iconSize.medium} 
+                            color={CommonColors.white} 
+                            style={styles.btnIcon} 
+                        />
                     }
-                    onPress={() => console.log("Send Code Pressed")}
+                    onPress={() => console.log("Confirm button pressed")}
                 />
 
             </View>
@@ -251,8 +254,8 @@ const SelectRideScreen = ({ navigation }) => {
     );
 };
 
-
-const style = (fonts, CommonColors,metrics) => StyleSheet.create({
+// Extracted styles to take dynamically injected fonts and metrics
+const createStyles = (fonts, metrics) => StyleSheet.create({
     safeArea: {
         flex: 1,
         backgroundColor: CommonColors.background,
@@ -271,14 +274,14 @@ const style = (fonts, CommonColors,metrics) => StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        paddingHorizontal: 20,
-        paddingVertical: 14,
+        paddingHorizontal: metrics.padding.high,
+        paddingVertical: metrics.padding.medium,
         backgroundColor: CommonColors.background,
     },
     backButton: {
-        width: 40,
-        height: 40,
-        borderRadius: 20,
+        width: metrics.margin.massive,
+        height: metrics.margin.massive,
+        borderRadius: metrics.borderRadius.veryHigh,
         backgroundColor: CommonColors.white,
         alignItems: 'center',
         justifyContent: 'center',
@@ -289,22 +292,21 @@ const style = (fonts, CommonColors,metrics) => StyleSheet.create({
         elevation: 2,
     },
     headerTitle: {
-        fontFamily: 'Manrope-Bold',
-        fontWeight: '700',
-        fontSize: 20,
+        fontFamily: fonts.bold,
+        fontSize: RFValue(20),
         letterSpacing: -0.4,
         color: CommonColors.primary,
     },
     headerRight: {
-        width: 40,
+        width: metrics.margin.massive,
     },
 
     // Map
     mapContainer: {
         flex: 1,
-        marginHorizontal: 20,
-        marginBottom: 0,
-        borderRadius: 20,
+        marginHorizontal: metrics.margin.high,
+        marginBottom: metrics.margin.none,
+        borderRadius: metrics.borderRadius.veryHigh,
         overflow: 'hidden',
         backgroundColor: CommonColors.screenBg,
         minHeight: 180,
@@ -345,28 +347,28 @@ const style = (fonts, CommonColors,metrics) => StyleSheet.create({
     pinInner: {
         width: 12,
         height: 12,
-        borderRadius: 6,
+        borderRadius: metrics.borderRadius.tiny,
         backgroundColor: CommonColors.primary,
     },
     pinRing: {
         position: 'absolute',
         width: 24,
         height: 24,
-        borderRadius: 12,
+        borderRadius: metrics.borderRadius.medium,
         borderWidth: 2,
         borderColor: `${CommonColors.primary}30`,
     },
     tripChip: {
         position: 'absolute',
-        bottom: 14,
-        right: 14,
+        bottom: metrics.margin.medium,
+        right: metrics.margin.medium,
         flexDirection: 'row',
         alignItems: 'center',
-        gap: 6,
+        gap: metrics.margin.low,
         backgroundColor: CommonColors.white,
-        paddingHorizontal: 12,
-        paddingVertical: 7,
-        borderRadius: 20,
+        paddingHorizontal: metrics.padding.medium,
+        paddingVertical: metrics.padding.low,
+        borderRadius: metrics.borderRadius.veryHigh,
         shadowColor: CommonColors.black,
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.08,
@@ -374,52 +376,50 @@ const style = (fonts, CommonColors,metrics) => StyleSheet.create({
         elevation: 3,
     },
     tripChipText: {
-        fontFamily: 'Inter',
-        fontWeight: '600',
-        fontSize: 12,
+        fontFamily: fonts.semiBold,
+        fontSize: RFValue(12),
         color: CommonColors.textSecondary,
     },
 
     // Bottom Sheet
     bottomSheet: {
         backgroundColor: CommonColors.white,
-        borderTopLeftRadius: 28,
-        borderTopRightRadius: 28,
-        paddingTop: 12,
-        paddingHorizontal: 20,
-        paddingBottom: 24,
+        borderTopLeftRadius: metrics.borderRadius.extraHigh,
+        borderTopRightRadius: metrics.borderRadius.extraHigh,
+        paddingTop: metrics.padding.medium,
+        paddingHorizontal: metrics.padding.high,
+        paddingBottom: metrics.padding.veryHigh,
         shadowColor: CommonColors.black,
         shadowOffset: { width: 0, height: -10 },
         shadowOpacity: 0.06,
         shadowRadius: 30,
         elevation: 20,
-        marginTop: 12,
+        marginTop: metrics.margin.medium,
     },
     sheetHandle: {
         width: 36,
         height: 4,
-        borderRadius: 2,
+        borderRadius: metrics.borderRadius.tiny,
         backgroundColor: CommonColors.border,
         alignSelf: 'center',
-        marginBottom: 20,
+        marginBottom: metrics.margin.veryHigh,
     },
     sectionHeader: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginBottom: 14,
+        marginBottom: metrics.margin.medium,
     },
     sectionLabel: {
-        fontFamily: 'Inter',
-        fontWeight: '700',
-        fontSize: 11,
+        fontFamily: fonts.bold,
+        fontSize: RFValue(11),
         letterSpacing: 1.5,
         textTransform: 'uppercase',
         color: CommonColors.textLight,
     },
     sectionSub: {
-        fontFamily: 'Inter',
-        fontSize: 12,
+        fontFamily: fonts.regular,
+        fontSize: RFValue(12),
         color: CommonColors.textLight,
     },
 
@@ -428,8 +428,8 @@ const style = (fonts, CommonColors,metrics) => StyleSheet.create({
         maxHeight: 280,
     },
     rideListContent: {
-        gap: 10,
-        paddingBottom: 4,
+        gap: metrics.margin.low,
+        paddingBottom: metrics.padding.tiny,
     },
 
     // Ride Card
@@ -437,9 +437,9 @@ const style = (fonts, CommonColors,metrics) => StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         backgroundColor: CommonColors.screenBg,
-        borderRadius: 16,
-        padding: 16,
-        gap: 14,
+        borderRadius: metrics.borderRadius.high,
+        padding: metrics.padding.high,
+        gap: metrics.margin.medium,
         borderWidth: 2,
         borderColor: 'transparent',
         position: 'relative',
@@ -452,7 +452,7 @@ const style = (fonts, CommonColors,metrics) => StyleSheet.create({
     cardIconWrapper: {
         width: 52,
         height: 52,
-        borderRadius: 14,
+        borderRadius: metrics.borderRadius.medium,
         backgroundColor: CommonColors.white,
         alignItems: 'center',
         justifyContent: 'center',
@@ -465,9 +465,8 @@ const style = (fonts, CommonColors,metrics) => StyleSheet.create({
         flex: 1,
     },
     cardLabel: {
-        fontFamily: 'Manrope-Bold',
-        fontWeight: '700',
-        fontSize: 15,
+        fontFamily: fonts.bold,
+        fontSize: RFValue(15),
         color: CommonColors.primary,
         marginBottom: 2,
     },
@@ -475,8 +474,8 @@ const style = (fonts, CommonColors,metrics) => StyleSheet.create({
         color: CommonColors.white,
     },
     cardDescription: {
-        fontFamily: 'Inter',
-        fontSize: 12,
+        fontFamily: fonts.regular,
+        fontSize: RFValue(12),
         color: CommonColors.textSecondary,
     },
     cardDescriptionSelected: {
@@ -484,12 +483,11 @@ const style = (fonts, CommonColors,metrics) => StyleSheet.create({
     },
     cardRight: {
         alignItems: 'flex-end',
-        gap: 6,
+        gap: metrics.margin.tiny,
     },
     cardPrice: {
-        fontFamily: 'Manrope-ExtraBold',
-        fontWeight: '800',
-        fontSize: 17,
+        fontFamily: fonts.bold,
+        fontSize: RFValue(17),
         color: CommonColors.primary,
         letterSpacing: -0.3,
     },
@@ -501,17 +499,16 @@ const style = (fonts, CommonColors,metrics) => StyleSheet.create({
         alignItems: 'center',
         gap: 4,
         backgroundColor: CommonColors.white,
-        paddingHorizontal: 8,
+        paddingHorizontal: metrics.padding.low,
         paddingVertical: 3,
-        borderRadius: 20,
+        borderRadius: metrics.borderRadius.veryHigh,
     },
     etaBadgeSelected: {
         backgroundColor: 'rgba(255,255,255,0.2)',
     },
     etaText: {
-        fontFamily: 'Inter',
-        fontWeight: '600',
-        fontSize: 11,
+        fontFamily: fonts.semiBold,
+        fontSize: RFValue(11),
         color: CommonColors.textSecondary,
     },
     etaTextSelected: {
@@ -532,38 +529,36 @@ const style = (fonts, CommonColors,metrics) => StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        paddingVertical: 16,
-        marginTop: 4,
+        paddingVertical: metrics.padding.high,
+        marginTop: metrics.margin.tiny,
         borderTopWidth: 1,
         borderTopColor: CommonColors.border,
-        marginBottom: 14,
+        marginBottom: metrics.margin.medium,
     },
     priceSummaryLabel: {
-        fontFamily: 'Inter',
-        fontSize: 12,
+        fontFamily: fonts.regular,
+        fontSize: RFValue(12),
         color: CommonColors.textLight,
         marginBottom: 2,
     },
     priceSummaryValue: {
-        fontFamily: 'Manrope-ExtraBold',
-        fontWeight: '800',
-        fontSize: 22,
+        fontFamily: fonts.bold,
+        fontSize: RFValue(22),
         color: CommonColors.primary,
         letterSpacing: -0.5,
     },
     priceSummaryRight: {
         flexDirection: 'row',
         alignItems: 'center',
-        gap: 6,
+        gap: metrics.margin.low,
         backgroundColor: CommonColors.screenBg,
-        paddingHorizontal: 14,
-        paddingVertical: 10,
-        borderRadius: 12,
+        paddingHorizontal: metrics.padding.medium,
+        paddingVertical: metrics.padding.medium,
+        borderRadius: metrics.borderRadius.medium,
     },
     priceSummaryPayment: {
-        fontFamily: 'Inter',
-        fontWeight: '600',
-        fontSize: 13,
+        fontFamily: fonts.semiBold,
+        fontSize: RFValue(13),
         color: CommonColors.textSecondary,
     },
 
@@ -574,7 +569,7 @@ const style = (fonts, CommonColors,metrics) => StyleSheet.create({
         justifyContent: 'center',
         backgroundColor: CommonColors.primary,
         height: 60,
-        borderRadius: 16,
+        borderRadius: metrics.borderRadius.high,
         shadowColor: CommonColors.primary,
         shadowOffset: { width: 0, height: 8 },
         shadowOpacity: 0.25,
@@ -583,9 +578,8 @@ const style = (fonts, CommonColors,metrics) => StyleSheet.create({
         position: 'relative',
     },
     confirmButtonText: {
-        fontFamily: 'Manrope-Bold',
-        fontWeight: '700',
-        fontSize: 16,
+        fontFamily: fonts.bold,
+        fontSize: RFValue(16),
         color: CommonColors.white,
         letterSpacing: 0.2,
     },
