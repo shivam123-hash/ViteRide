@@ -19,6 +19,7 @@ import EarningsScreen from './src/screens/driver_screens/earnings_screen/Earning
 import TripHistoryScreen from './src/screens/driver_screens/trip_history_screen/TripHistoryScreen';
 import RideCompletedScreen from './src/screens/driver_screens/ride_completed_screen/RideCompletedScreen';
 import OtpScreen from './src/screens/driver_screens/otp_screen/OtpScreen';
+import  ActiveTripScreen from './src/screens/driverScreens/ActiveTripScreen';
 
 function App() {
   const isDarkMode = useColorScheme() === 'dark';
@@ -26,12 +27,12 @@ function App() {
   return (
     <SafeAreaProvider style={styles.container}>
       <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
         backgroundColor="transparent"
         translucent={true}
       />
       <ThemeProvider>
         <OtpScreen />
+        <ActiveTripScreen />
       </ThemeProvider>
 
     </SafeAreaProvider>

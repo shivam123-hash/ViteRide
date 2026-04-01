@@ -45,7 +45,7 @@ const getStyles = (colors, fonts, metrics) => StyleSheet.create({
         justifyContent: 'space-between',
         height: metrics.windowHeight * 0.07,
         paddingHorizontal: metrics.padding.veryHigh,
-        backgroundColor: colors.background,
+        backgroundColor: colors.screenBg,
     },
     titleContainer: {
         position: 'absolute',

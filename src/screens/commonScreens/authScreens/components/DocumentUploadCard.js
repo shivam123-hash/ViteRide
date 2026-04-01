@@ -71,7 +71,11 @@ const createStyles = (colors, fonts) =>
             borderRadius: GlobalMetrics.borderRadius.extraHigh,
             padding: GlobalMetrics.padding.veryHigh,
             marginBottom: GlobalMetrics.margin.high,
-            elevation:5
+            elevation: 5,
+            shadowColor: colors.black,
+            shadowOffset: { width: 0, height: 1 },
+            shadowOpacity: 0.08,
+            shadowRadius: 3,
         },
         topRow: {
             flexDirection: 'row',
