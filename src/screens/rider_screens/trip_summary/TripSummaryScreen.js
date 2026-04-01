@@ -290,7 +290,7 @@ const createStyles = (fonts, metrics) => StyleSheet.create({
     },
 
     routeBanner: {
-        height: 110,
+        height: 220,
         borderRadius: metrics.borderRadius.high,
         overflow: 'hidden',
         marginBottom: metrics.margin.veryHigh,
