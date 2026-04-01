@@ -35,7 +35,7 @@ function App() {
         <ActiveTripScreen />
       </ThemeProvider>
 
-    </SafeAreaProvider>
+    </SafeAreaProvider >
   );
 }
 
