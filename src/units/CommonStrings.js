@@ -366,6 +366,102 @@ export default {
             showProgress: false,
         },
     ],
+
+    // Earnings screen
+    earningsHeader: 'Earnings',
+    totalEarningsTabLabel: 'Total Earnings',
+    earningsTodayAmount: '$1,450.00',
+    earningsGrowthToday: '+12.5% from yesterday',
+    completedTripsLabel: 'Completed Trips',
+    completedTripsValue: '42',
+    timeOnlineLabel: 'Time Online',
+    timeOnlineValue: '8.5',
+    timeOnlineUnit: 'HRS',
+    hourlyActivityTitle: 'Hourly Activity',
+    hourlyActivityPeak: 'Peak: 5:00 PM',
+    revenueSplitTitle: 'Revenue Split',
+    digitalLabel: 'Digital',
+    cashLabel: 'Cash',
+    digitalPaymentsLabel: 'Digital Payments',
+    digitalPaymentsValue: '$1,150.00',
+    cashCollectedLabel: 'Cash Collected',
+    cashCollectedValue: '$300.00',
+    withdrawEarningsBtn: 'Withdraw Earnings',
+    payoutNote: 'Payouts are processed every Monday at 12:00 AM.\nInstant withdrawals are subject to a $0.50 fee.',
+    earningsTabs: ['Today', 'Week', 'Month'],
+    hourlyBars: [0.30, 0.45, 0.25, 0.60, 0.90, 0.75, 0.40, 0.20],
+
+    // Trip History
+    tripHistoryHeader: 'Trip History',
+    tripHistoryFilters: ['All', 'Completed', 'Cancelled'],
+    pickupLabel: 'Pickup Point',
+    dropoffLabel: 'Drop-off Location',
+    monthlySummaryLabel: 'Monthly Summary',
+    monthlyTotalAmount: '₹14,582.00',
+    monthlyTripsNote: '42 Successful trips this month',
+    statusCompleted: 'Completed',
+    statusCancelled: 'Cancelled',
+    tripHistory: [
+        {
+            id: '1',
+            datetime: 'Oct 24, 2023 • 09:15 AM',
+            pickup: 'Crystal Plaza',
+            dropoff: 'Bandra West',
+            amount: '₹342.50',
+            status: 'completed',
+        },
+        {
+            id: '2',
+            datetime: 'Oct 23, 2023 • 06:45 PM',
+            pickup: 'Cyber Hub, Gurgaon',
+            dropoff: 'Aerocity Metro Station',
+            amount: '₹580.00',
+            status: 'completed',
+        },
+        {
+            id: '3',
+            datetime: 'Oct 23, 2023 • 12:30 PM',
+            pickup: 'DLF Mall of India',
+            dropoff: 'Noida Sector 18',
+            amount: '₹120.00',
+            status: 'cancelled',
+        },
+        {
+            id: '4',
+            datetime: 'Oct 22, 2023 • 08:00 PM',
+            pickup: 'Hauz Khas Village',
+            dropoff: 'Safdarjung Enclave',
+            amount: '₹215.75',
+            status: 'completed',
+        },
+    ],
+
+
+
+    // ride completed screen
+    rideCompletedHeader: 'Ride Completed',
+    totalEarningsDriverLabel: 'Total Earnings',
+    totalEarningsDriverValue: '$24.42',
+    processedLabel: 'Processed',
+    fareBreakdownDriverTitle: 'Fare Breakdown',
+    grossFareLabel: 'Gross Fare',
+    grossFareValue: '$32.50',
+    commissionLabel: 'ViteRide Commission',
+    commissionValue: '-$8.08',
+    netEarningsLabel: 'Net Earnings',
+    netEarningsValue: '$24.42',
+    distanceTimeLabel: 'Distance & Time',
+    distanceTimeValue: '8.4 miles • 22 min',
+    cashCollectedLabel2: 'Cash Collected',
+    cashCollectedConfirm: 'Confirm $0.00 received',
+    ratePassengerBtn: 'Rate Passenger',
+    backToDashboardBtn: 'Back to Dashboard',
+
+    // OTP  screen 
+    otpScreenHeader: 'OTP Screen',
+    otpScreenTitle: 'Enter 4-digit OTP from passenger',
+    otpScreenLabel: 'Ask your passenger for the unique code displayed on their screen to begin the journey.',
+    btnStartRide: 'Start Ride'
 };
 
 //     // Help & Support Screen

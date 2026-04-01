@@ -15,6 +15,10 @@ import TripSummaryScreen from './src/screens/rider_screens/trip_summary/TripSumm
 import DriverRegistrationFlowScreen from './src/screens/commonScreens/authScreens/driverAuthScreens/DriverRegistrationFlowScreen';
 import MissionScreens from './src/screens/driver_screens/mission_screens/MissionScreens';
 import HelpInfoScreen from './src/screens/driver_screens/help_info_screen/HelpInfoScreen';
+import EarningsScreen from './src/screens/driver_screens/earnings_screen/EarningsScreen';
+import TripHistoryScreen from './src/screens/driver_screens/trip_history_screen/TripHistoryScreen';
+import RideCompletedScreen from './src/screens/driver_screens/ride_completed_screen/RideCompletedScreen';
+import OtpScreen from './src/screens/driver_screens/otp_screen/OtpScreen';
 
 function App() {
   const isDarkMode = useColorScheme() === 'dark';
@@ -27,7 +31,7 @@ function App() {
         translucent={true}
       />
       <ThemeProvider>
-        <HelpInfoScreen />
+        <OtpScreen />
       </ThemeProvider>
 
     </SafeAreaProvider>
