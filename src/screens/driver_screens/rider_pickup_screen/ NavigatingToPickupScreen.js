@@ -7,22 +7,24 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from '@react-native-vector-icons/ionicons';
 import { RFValue } from 'react-native-responsive-fontsize';
-import { useTheme } from '../../common/ThemeContest';
-import strings from '../../units/CommonStrings';
-import CommonButton from '../../components/CommonBtn';
+import { useTheme } from '../../../common/ThemeContest';
+import strings from '../../../units/CommonStrings';
+import CommonButton from '../../../components/CommonBtn';
+import { useNavigation } from '@react-navigation/native';
 
 const NavigatingToPickupScreen = () => {
     
     const { colors, fonts, metrics } = useTheme();
     const styles = getStyles(colors, fonts, metrics);
     const [hasArrived, setHasArrived] = useState(false);
+    const navigation = useNavigation()
 
     const handleArrivedPress = () => {
         setHasArrived(true);
     };
 
     const handleEnterCodePress = () => {
-        console.log("Enter Code flow triggered");
+        navigation.navigate("OtpScreen")
     };
 
     return (

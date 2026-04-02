@@ -28,6 +28,10 @@ const InTransitScreen = ({ navigation }) => {
     const handleChat = () => console.log('Chat with driver');
     const handleSOS = () => console.log('SOS triggered');
 
+    const handleComplete = () => {
+        navigation.navigation('TripSummary')
+    }
+
     return (
         <SafeAreaView style={styles.safeArea} edges={['top']}>
             <StatusBar barStyle="dark-content" backgroundColor={CommonColors.white} />

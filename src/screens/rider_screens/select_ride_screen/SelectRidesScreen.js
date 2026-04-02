@@ -99,7 +99,7 @@ const SelectRideScreen = ({ navigation }) => {
     });
 
     return (
-        <SafeAreaView style={styles.safeArea}>
+        <SafeAreaView style={styles.safeArea} edges={['top','bottom']}>
             <StatusBar barStyle="dark-content" backgroundColor={CommonColors.background} />
 
             <CommonHeader
@@ -200,7 +200,6 @@ const SelectRideScreen = ({ navigation }) => {
                             textColor={CommonColors.white}
                             height={metrics.windowHeight * 0.065}
                             borderRadius={metrics.borderRadius.high}
-                            marginTop={metrics.margin.medium}
                             elevation={2}
                             textStyle={styles.btnTextStyle}
                             rightComponent={
@@ -211,7 +210,7 @@ const SelectRideScreen = ({ navigation }) => {
                                     style={styles.btnIcon}
                                 />
                             }
-                            onPress={() => console.log('Confirm pressed')}
+                            onPress={() => navigation.navigate('FindingRide')}
                         />
                     </>
                 )}
@@ -314,10 +313,6 @@ const createStyles = (fonts, metrics) => StyleSheet.create({
         color: CommonColors.white,
     },
     bottomSheet: {
-        position: 'absolute',
-        bottom: 0,
-        left: 0,
-        right: 0,
         backgroundColor: CommonColors.white,
         borderTopLeftRadius: metrics.borderRadius.extraHigh,
         borderTopRightRadius: metrics.borderRadius.extraHigh,
@@ -463,11 +458,10 @@ const createStyles = (fonts, metrics) => StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        paddingVertical: metrics.padding.high,
-        marginTop: metrics.margin.tiny,
+        paddingVertical: metrics.padding.low,
         borderTopWidth: 1,
         borderTopColor: CommonColors.border,
-        marginBottom: metrics.margin.medium,
+        // backgroundColor:'red'
     },
     priceSummaryLabel: {
         fontFamily: fonts.bold,

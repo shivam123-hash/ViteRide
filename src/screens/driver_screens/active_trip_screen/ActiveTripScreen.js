@@ -9,13 +9,19 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from '@react-native-vector-icons/ionicons';
 import { RFValue } from 'react-native-responsive-fontsize';
 
-import { useTheme } from '../../common/ThemeContest';
-import strings from '../../units/CommonStrings';
-import CommonButton from '../../components/CommonBtn';
+import { useTheme } from '../../../common/ThemeContest';
+import strings from '../../../units/CommonStrings';
+import CommonButton from '../../../components/CommonBtn';
+import { useNavigation } from '@react-navigation/native';
 
 const ActiveTripScreen = () => {
     const { colors, fonts, metrics } = useTheme();
     const styles = getStyles(colors, fonts, metrics);
+    const navigation = useNavigation();
+
+    const handleEndRide = () => {
+   navigation.navigate("RideCompletedScreen")
+    }
 
     return (
         <View style={styles.container}>
@@ -85,7 +91,7 @@ const ActiveTripScreen = () => {
                         marginTop={metrics.margin.high}
                         elevation={4}
                         textStyle={styles.endRideBtnText}
-                        onPress={() => console.log('End Ride Pressed')}
+                        onPress={handleEndRide}
                     />
 
                 </View>

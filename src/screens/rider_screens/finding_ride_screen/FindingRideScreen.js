@@ -23,7 +23,7 @@ import InfoChip from './components/InfoChip';
 
 const { width, height } = Dimensions.get('window');
 
-const INITIAL_SECONDS = 165;
+const INITIAL_SECONDS = 10;
 
 const FindingRideScreen = ({ navigation }) => {
     const [secondsLeft, setSecondsLeft] = useState(INITIAL_SECONDS);
@@ -31,11 +31,20 @@ const FindingRideScreen = ({ navigation }) => {
     const { fonts, metrics } = useTheme();
     const styles = useMemo(() => createStyles(fonts, metrics), [fonts, metrics]);
 
-    useEffect(() => {
-        if (secondsLeft <= 0) return;
+    // useEffect(() => {
+    //     if (secondsLeft <= 0) return;
+    //     const timer = setInterval(() => setSecondsLeft((s) => s - 1), 1000);
+    //     return () => clearInterval(timer);
+    // }, [secondsLeft]);
+
+       useEffect(() => {
+        if (secondsLeft <= 0) {
+            navigation.replace('InTransit'); 
+            return;
+        }
         const timer = setInterval(() => setSecondsLeft((s) => s - 1), 1000);
         return () => clearInterval(timer);
-    }, [secondsLeft]);
+    }, [secondsLeft, navigation]);
 
     const progress = 1 - secondsLeft / INITIAL_SECONDS;
 
@@ -116,7 +125,7 @@ const FindingRideScreen = ({ navigation }) => {
 const createStyles = (fonts, metrics) => StyleSheet.create({
     safeArea: {
         flex: 1,
-        backgroundColor: CommonColors.background,
+        backgroundColor: CommonColors.screenBg,
     },
     moreBtn: {
         width: metrics.margin.massive,

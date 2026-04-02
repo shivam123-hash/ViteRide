@@ -18,6 +18,7 @@ import CommonInput from "../../../../components/CommonInput";
 import CommonButton from "../../../../components/CommonBtn";
 import strings from "../../../../units/CommonStrings";
 import { useTheme } from "../../../../common/ThemeContest";
+import { useNavigation } from "@react-navigation/native";
 
 const EditProfileScreen = () => {
 
@@ -28,6 +29,7 @@ const EditProfileScreen = () => {
     const [phone, setPhone] = useState(strings.defaultPhone);
     const [email, setEmail] = useState(strings.defaultEmail);
     const [homeCity, setHomeCity] = useState(strings.defaultCity);
+    const navigation = useNavigation();
 
     const handleImagePick = () => {
         ImagePicker.openPicker({
@@ -45,10 +47,10 @@ const EditProfileScreen = () => {
     };
 
     return (
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={styles.container}> 
             <CommonHeader
                 title={strings.editProfileTitle}
-                onBackPress={() => console.log("Go Back")}
+                onBackPress={() => navigation.goBack()}
                 rightIconName="ellipsis-vertical"
                 onRightPress={() => console.log("Options")}
             />
@@ -162,7 +164,7 @@ export default EditProfileScreen;
 const getStyles = (colors, fonts, metrics) => StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: colors.background,
+        backgroundColor: colors.screenBg,
     },
     keyboardView: {
         flex: 1,

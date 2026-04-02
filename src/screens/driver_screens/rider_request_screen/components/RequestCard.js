@@ -2,12 +2,22 @@ import React, { memo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import Ionicons from '@react-native-vector-icons/ionicons';
 import { RFValue } from 'react-native-responsive-fontsize';
-
-import strings from '../../../units/CommonStrings';
-import CommonButton from '../../../components/CommonBtn';
+import strings from '../../../../units/CommonStrings';
+import CommonButton from '../../../../components/CommonBtn';
+import { useNavigation } from '@react-navigation/native';
 
 const RequestCard = ({ item, colors, fonts, metrics }) => {
+
     const styles = getStyles(colors, fonts, metrics);
+    const navigation = useNavigation();
+
+    const handleAccpetRequest = () => {
+        navigation.navigate("NavigatingToPickupScreen")
+    }
+
+    const handleViewDeatils = () => {
+        navigation.navigate("TripRequestDetailScreen")
+    }
 
     return (
         <View style={styles.cardContainer}>
@@ -64,7 +74,7 @@ const RequestCard = ({ item, colors, fonts, metrics }) => {
                     elevation={0}
                     containerStyle={styles.viewDetailsBtn}
                     textStyle={styles.actionBtnText}
-                    onPress={() => console.log('View Details', item.id)}
+                    onPress={handleViewDeatils}
                 />
                 <CommonButton
                     title={strings.btnAccept}
@@ -75,7 +85,7 @@ const RequestCard = ({ item, colors, fonts, metrics }) => {
                     elevation={4}
                     containerStyle={styles.acceptBtn}
                     textStyle={styles.actionBtnText}
-                    onPress={() => console.log('Accept Request', item.id)}
+                    onPress={handleAccpetRequest}
                 />
             </View>
         </View>
@@ -111,7 +121,7 @@ const getStyles = (colors, fonts, metrics) => StyleSheet.create({
         width: metrics.windowWidth * 0.12,
         height: metrics.windowWidth * 0.12,
         borderRadius: metrics.borderRadius.circular,
-        backgroundColor: '#1E3A45', 
+        backgroundColor: '#1E3A45',
         justifyContent: 'center',
         alignItems: 'center',
         marginRight: metrics.margin.medium,

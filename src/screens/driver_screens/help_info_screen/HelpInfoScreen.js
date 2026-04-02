@@ -3,10 +3,8 @@ import {
     View,
     Text,
     ScrollView,
-    TouchableOpacity,
     StyleSheet,
     StatusBar,
-    Image,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '../../../common/ThemeContest';
@@ -73,7 +71,7 @@ const HelpInfoScreen = ({ navigation }) => {
 const createStyles = (fonts, metrics) => StyleSheet.create({
     safeArea: {
         flex: 1,
-        backgroundColor: CommonColors.background,
+        backgroundColor: CommonColors.screenBg,
     },
     scroll: {
         flex: 1,

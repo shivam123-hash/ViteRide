@@ -25,7 +25,7 @@ const MissionsScreen = ({ navigation }) => {
             <StatusBar barStyle="dark-content" backgroundColor={CommonColors.background} />
 
             <CommonHeader title="Active Missions"
-                onBackPress={() => { }} />
+                onBackPress={() => navigation?.goBack()} />
 
             <ScrollView
                 style={styles.scroll}
@@ -55,7 +55,7 @@ const MissionsScreen = ({ navigation }) => {
             <TouchableOpacity
                 style={styles.helpFab}
                 activeOpacity={0.85}
-                onPress={() => console.log('Help pressed')}
+                onPress={navigation.navigate("HelpInfoScreen")}
             >
                 <MaterialIcons
                     name="help-outline"
@@ -70,7 +70,7 @@ const MissionsScreen = ({ navigation }) => {
 const createStyles = (fonts, metrics) => StyleSheet.create({
     safeArea: {
         flex: 1,
-        backgroundColor: CommonColors.background,
+        backgroundColor: CommonColors.screenBg,
     },
 
     header: {

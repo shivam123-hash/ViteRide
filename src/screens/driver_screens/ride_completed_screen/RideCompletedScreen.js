@@ -26,7 +26,7 @@ const RideCompletedScreen = ({ navigation }) => {
     const styles = useMemo(() => createStyles(fonts, metrics), [fonts, metrics]);
 
     const handleRatePassenger = () => console.log('Rate passenger pressed');
-    const handleBackToDashboard = () => navigation?.goBack();
+    const handleBackToDashboard = () => navigation?.pop(4);
 
     return (
         <SafeAreaView style={styles.safeArea}>
@@ -75,7 +75,7 @@ const RideCompletedScreen = ({ navigation }) => {
 const createStyles = (fonts, metrics) => StyleSheet.create({
     safeArea: {
         flex: 1,
-        backgroundColor: CommonColors.background,
+        backgroundColor: CommonColors.screenBg,
     },
 
     header: {

@@ -1,4 +1,4 @@
-import React, { useState ,useMemo} from 'react';
+import React, { useState, useMemo } from 'react';
 import {
     View,
     StyleSheet,
@@ -14,28 +14,38 @@ import QuickAccessChips from './components/QuickAccessChip';
 import CommonColors from '../../../units/CommonColor';
 import { useTheme } from "../../../common/ThemeContest";
 import { RFValue } from 'react-native-responsive-fontsize';
+import { useNavigation } from '@react-navigation/native';
 
 const HomeScreen = () => {
+
     const { fonts, metrics } = useTheme();
-        const styles = useMemo(() => createStyles(fonts, metrics), [fonts, metrics]);
-       
+    const styles = useMemo(() => createStyles(fonts, metrics), [fonts, metrics]);
+
     const [searchText, setSearchText] = useState('');
     const [activeChip, setActiveChip] = useState('home');
+    const navigation = useNavigation();
 
     const handleMenuPress = () => {
-
+        navigation.navigate("Profile")
     };
 
-    const handleSearch = () => {};
+    const handleSearchChange = (text) => {
+        setSearchText(text);
+        if (text.length > 0) {
+            navigation.navigate('Search', { initialQuery: text });
+            setSearchText('');
+        }
+    };
+
+    const handleSearchSubmit = () => {
+        if (searchText.length > 0) {
+            navigation.navigate('Search', { initialQuery: searchText });
+            setSearchText('');
+        }
+    };
 
     const handleChipPress = (chipId) => {
-
-    };
-
-    const handleReferNow = () => {
-    };
-
-    const handleTabPress = (tabId) => {
+        setActiveChip(chipId);
     };
 
     return (
@@ -50,26 +60,22 @@ const HomeScreen = () => {
                     <View style={styles.searchSection}>
                         <SearchBar
                             value={searchText}
-                            onChangeText={setSearchText}
-                            onSubmit={handleSearch}
+                            onChangeText={handleSearchChange}
+                            onSubmit={handleSearchSubmit}
                         />
                         <QuickAccessChips
                             activeChip={activeChip}
                             onChipPress={handleChipPress}
                         />
                     </View>
-
-                    {/* Spacer */}
                     <View style={styles.spacer} />
-
-
                 </View>
             </KeyboardAvoidingView>
         </SafeAreaView>
     );
 };
 
-const createStyles = (fonts, metrics) =>  StyleSheet.create({
+const createStyles = (fonts, metrics) => StyleSheet.create({
     safeArea: {
         flex: 1,
         backgroundColor: CommonColors.background,
@@ -81,7 +87,7 @@ const createStyles = (fonts, metrics) =>  StyleSheet.create({
         flex: 1,
         paddingHorizontal: metrics.padding.extraHigh,
         paddingTop: metrics.padding.high,
-        paddingBottom:  metrics.padding.medium,
+        paddingBottom: metrics.padding.medium,
         zIndex: RFValue(10),
     },
     searchSection: {

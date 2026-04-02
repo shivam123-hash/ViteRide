@@ -33,7 +33,7 @@ const TopAppBar = ({ onMenuPress }) => {
             </View>
 
             {/* Avatar */}
-            <TouchableOpacity activeOpacity={0.85} style={styles.avatarWrapper}>
+            <TouchableOpacity activeOpacity={0.85} style={styles.avatarWrapper} onPress={onMenuPress}>
                 <Image
                     source={{
                         uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCPjGDwqCF7Y1yKB1X_iDaH1A1kybEqDt2DwSSGgNCD-Xk5usEX-r_DPQEyVTy4--O15_5k361MpHpSC3itdq9703ZUB0dwIe94BFl6ySdc958vSEcnjF-jyvHXVbqtGIPtj4nonq5GW0rF4jsdxmW5-cCOEDSW4CIxB4DJm7jJx7AbPscKLrdjh5I6iHLucTqnhtpVUd6W-JGksTdxhFy-LgHsAwqF8InbocTh1oOGuWZIyd6x8UOgst_mr1ypMReaOgq_aSAzWlfC',

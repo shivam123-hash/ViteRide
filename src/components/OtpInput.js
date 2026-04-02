@@ -1,13 +1,13 @@
 import React, { useMemo, useRef } from "react";
 import { View, TextInput, StyleSheet } from "react-native";
-import { useTheme } from '../../../../common/ThemeContest';
+import { useTheme } from '../common/ThemeContest';
 import { RFValue } from "react-native-responsive-fontsize";
 
 const OtpInput = ({ length = 4, value, onChange }) => {
     const inputs = useRef([]);
 
-    const { fonts, metrics } = useTheme();
-    const styles = useMemo(() => createStyles(fonts, metrics), [fonts, metrics]);
+    const { fonts, metrics , colors} = useTheme();
+    const styles = useMemo(() => createStyles(fonts, metrics, colors), [fonts, metrics, colors]);
     const handleChange = (text, index) => {
         let newOtp = value.split("");
         newOtp[index] = text;
@@ -49,11 +49,11 @@ const OtpInput = ({ length = 4, value, onChange }) => {
 
 export default OtpInput;
 
-const createStyles = (fonts, metrics) => StyleSheet.create({
+const createStyles = (fonts, metrics, colors) => StyleSheet.create({
     container: {
-        width:'100%',
+        width: '100%',
         flexDirection: "row",
-        justifyContent:'space-evenly',
+        justifyContent: 'space-evenly',
         marginVertical: metrics.margin.veryHigh,
     },
     input: {
@@ -65,5 +65,9 @@ const createStyles = (fonts, metrics) => StyleSheet.create({
         fontSize: RFValue(18),
         fontFamily: fonts.bold,
         elevation: 2,
+        shadowColor: colors.shadow,
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 4,
+        shadowRadius: 8,
     },
 });

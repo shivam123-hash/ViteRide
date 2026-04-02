@@ -2,9 +2,9 @@ import React from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import Ionicons from '@react-native-vector-icons/ionicons';
 import { RFValue } from 'react-native-responsive-fontsize';
-import { useTheme } from '../../../common/ThemeContest';
-import strings from '../../../units/CommonStrings';
-import CommonButton from '../../../components/CommonBtn'; 
+import { useTheme } from '../../../../common/ThemeContest';
+import strings from '../../../../units/CommonStrings';
+import CommonButton from '../../../../components/CommonBtn'; 
 
 const DriverOnlineBottomOverlay = () => {
     const { colors, fonts, metrics } = useTheme();

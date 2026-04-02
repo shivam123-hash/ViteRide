@@ -9,10 +9,10 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from '@react-native-vector-icons/ionicons';
 import { RFValue } from 'react-native-responsive-fontsize';
 
-import { useTheme } from '../../common/ThemeContest';
-import strings from '../../units/CommonStrings';
-import CommonHeader from '../../components/CommonHeader';
-import CommonButton from '../../components/CommonBtn';
+import { useTheme } from '../../../../common/ThemeContest';
+import strings from '../../../../units/CommonStrings';
+import CommonHeader from '../../../../components/CommonHeader';
+import CommonButton from '../../../../components/CommonBtn';
 
 const COUNTER_OFFERS = [
     { id: '1', amount: '₹360', subtitle: 'Driver nearby (1.2 km)', time: '2m ago', isPending: true },

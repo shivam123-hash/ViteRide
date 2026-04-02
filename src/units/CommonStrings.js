@@ -40,9 +40,12 @@ export default {
     editProfile: "Edit Profile",
     savedAddresses: "Saved Addresses",
     paymentMethods: "Payment Methods",
+    driverMode:"Driver Mode",
     emergencyContacts: "Emergency Contacts",
     settings: "Settings",
     logout: "Logout",
+    tripHistorytitle: "Trip History",
+    activeMisssion: "Active Missions",
 
     //EditScreen_Profile.
     editProfileTitle: "Edit Profile",

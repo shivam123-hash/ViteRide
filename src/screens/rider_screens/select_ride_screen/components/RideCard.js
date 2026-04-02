@@ -16,7 +16,6 @@ const { width } = Dimensions.get('window');
 const RideCard = ({ item, isSelected, onPress }) => {
 
     const { fonts, metrics } = useTheme();
-    // Wrap styles in useMemo so it efficiently injects global theme objects 
     const styles = useMemo(() => createStyles(fonts, metrics), [fonts, metrics]);
     const scale = useRef(new Animated.Value(1)).current;
     

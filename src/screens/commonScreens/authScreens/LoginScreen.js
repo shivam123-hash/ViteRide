@@ -13,12 +13,18 @@ import CommonInput from "../../../components/CommonInput";
 import strings from "../../../units/CommonStrings";
 import { useTheme } from "../../../common/ThemeContest";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useNavigation } from "@react-navigation/native";
 
 const LoginScreen = () => {
 
     const [phone, setPhone] = useState("");
     const { colors, fonts, metrics } = useTheme();
     const styles = getStyles(colors, fonts, metrics);
+    const navigation = useNavigation()
+
+    const handleAuthNavigation = () => {
+        navigation.navigate("OTP")
+    }
 
     return (
         <SafeAreaView style={styles.container}>
@@ -61,7 +67,7 @@ const LoginScreen = () => {
                         rightComponent={
                             <Ionicons name="chevron-forward" size={metrics.iconSize.regular} color={colors.white} style={styles.btnIcon} />
                         }
-                        onPress={() => console.log("Send Code Pressed")}
+                        onPress={handleAuthNavigation}
                     />
                     <View style={styles.dividerContainer}>
                         <View style={styles.dividerLine} />
@@ -81,7 +87,7 @@ const LoginScreen = () => {
                         leftComponent={
                             <Ionicons name="logo-google" size={metrics.iconSize.medium} color={colors.textPrimary} style={styles.googleIcon} />
                         }
-                        onPress={() => console.log("Google Pressed")}
+                        onPress={handleAuthNavigation}
                     />
                     <View style={styles.signupContainer}>
                         <Text style={styles.signupText}>

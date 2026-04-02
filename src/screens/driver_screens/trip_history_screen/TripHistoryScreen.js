@@ -34,12 +34,10 @@ const TripHistoryScreen = ({ navigation }) => {
     return (
         <SafeAreaView style={styles.safeArea}>
             <StatusBar barStyle="dark-content" backgroundColor={CommonColors.background} />
-
             <CommonHeader
                 title={strings.tripHistoryHeader}
                 onBackPress={() => navigation?.goBack()}
             />
-
             <ScrollView
                 style={styles.scroll}
                 contentContainerStyle={styles.scrollContent}
@@ -51,7 +49,6 @@ const TripHistoryScreen = ({ navigation }) => {
                     onSelect={setActiveFilter}
                     styles={styles}
                 />
-
                 <View style={styles.tripList}>
                     {filteredTrips.map((trip) => (
                         <TripCard
@@ -62,7 +59,6 @@ const TripHistoryScreen = ({ navigation }) => {
                         />
                     ))}
                 </View>
-
                 <MonthlySummary styles={styles} />
             </ScrollView>
         </SafeAreaView>
@@ -72,7 +68,7 @@ const TripHistoryScreen = ({ navigation }) => {
 const createStyles = (fonts, metrics) => StyleSheet.create({
     safeArea: {
         flex: 1,
-        backgroundColor: CommonColors.background,
+        backgroundColor: CommonColors.screenBg,
     },
     moreBtn: {
         width: metrics.margin.massive,

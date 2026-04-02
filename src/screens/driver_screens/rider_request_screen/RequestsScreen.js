@@ -7,9 +7,9 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { RFValue } from 'react-native-responsive-fontsize';
-import { useTheme } from '../../common/ThemeContest';
-import strings from '../../units/CommonStrings';
-import CommonHeader from '../../components/CommonHeader';
+import { useTheme } from '../../../common/ThemeContest';
+import strings from '../../../units/CommonStrings';
+import CommonHeader from '../../../components/CommonHeader';
 import RequestCard from './components/RequestCard';
 
 const DUMMY_REQUESTS = [
@@ -73,7 +73,7 @@ const RequestsScreen = ({ navigation }) => {
     ), [colors, fonts, metrics]);
 
     return (
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={styles.container} edges={['top']}>
             <CommonHeader
                 title={strings.requestsTitle}
                 onBackPress={() => navigation?.goBack()}
@@ -96,7 +96,7 @@ export default RequestsScreen;
 const getStyles = (colors, fonts, metrics) => StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: colors.background,
+        backgroundColor: colors.screenBg,
     },
     flatlistContent: {
         paddingHorizontal: metrics.padding.high,

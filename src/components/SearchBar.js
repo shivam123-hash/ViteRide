@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import CommonColors from '../units/CommonColor';
 
-const SearchIcon = ({ color =CommonColors.background }) => (
+const SearchIcon = ({ color = CommonColors.background }) => (
     <View style={styles.searchIconWrapper}>
         <View style={[styles.searchCircle, { borderColor: color }]} />
         <View style={[styles.searchHandle, { backgroundColor: color }]} />
@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
         fontSize: 15,
         fontFamily: 'Inter',
         fontWeight: '500',
-        color: CommonColors.background,
+        color: CommonColors.black,
         padding: 0,
         margin: 0,
     },

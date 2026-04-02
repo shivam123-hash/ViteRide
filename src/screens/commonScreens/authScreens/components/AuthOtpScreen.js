@@ -6,15 +6,15 @@ import {
     StyleSheet,
     StatusBar,
 } from 'react-native';
-import CommonHeader from '../../../components/CommonHeader';
+import CommonHeader from '../../../../components/CommonHeader';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useTheme } from '../../../common/ThemeContest';
-import CommonColors from '../../../units/CommonColor';
-import strings from '../../../units/CommonStrings';
+import { useTheme } from '../../../../common/ThemeContest';
+import CommonColors from '../../../../units/CommonColor';
+import strings from '../../../../units/CommonStrings';
 import { RFValue } from 'react-native-responsive-fontsize';
-import CommonButton from '../../../components/CommonBtn';
+import CommonButton from '../../../../components/CommonBtn';
 import Ionicons from '@react-native-vector-icons/ionicons';
-import OtpInput from '../../../components/OtpInput';
+import OtpInput from '../../../../components/CommonInput';
 import { useNavigation } from '@react-navigation/native';
 
 const OtpScreen = () => {
@@ -22,11 +22,6 @@ const OtpScreen = () => {
     const styles = useMemo(() => createStyles(fonts, metrics), [fonts, metrics]);
     const [otp, setOtp] = useState("");
     const navigation = useNavigation();
-
-     const handleActivePress = () => {
-        navigation.navigate("ActiveTripScreen")
-    };
-
     return (
         <SafeAreaView style={styles.safeArea}>
             <StatusBar barStyle="dark-content" backgroundColor={CommonColors.background} />
@@ -61,7 +56,7 @@ const OtpScreen = () => {
                     rightComponent={
                         <Ionicons name="chevron-forward" size={metrics.iconSize.regular} color={CommonColors.white} style={styles.btnIcon} />
                     }
-                    onPress={handleActivePress}
+                    onPress={() => console.log("Send Code Pressed")}
                 />
             </ScrollView>
         </SafeAreaView>

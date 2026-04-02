@@ -15,15 +15,20 @@ import CommonButton from "../../../components/CommonBtn";
 import strings from "../../../units/CommonStrings";
 import { useTheme } from "../../../common/ThemeContest";
 import MenuRowItem from './components/MenuRowItem';
+import { useNavigation } from "@react-navigation/native";
 
 const ProfileScreen = () => {
 
     const { colors, fonts, metrics } = useTheme();
     const styles = getStyles(colors, fonts, metrics);
+    const navigation = useNavigation();
+
     const profileOptions = [
         { id: 1, title: strings.editProfile, icon: 'person', onPress: () => console.log('Edit Profile') },
         { id: 2, title: strings.savedAddresses, icon: 'location', onPress: () => console.log('Addresses') },
         { id: 3, title: strings.paymentMethods, icon: 'wallet', onPress: () => console.log('Payments') },
+        { id: 4, title: strings.driverMode, icon: 'wallet', onPress: () => navigation.navigate('DriverAuthFlow') },
+
     ];
     const securityOptions = [
         { id: 4, title: strings.emergencyContacts, icon: 'id-card', onPress: () => console.log('Emergency') },
@@ -31,12 +36,19 @@ const ProfileScreen = () => {
     const appOptions = [
         { id: 5, title: strings.settings, icon: 'settings', onPress: () => console.log('Settings') },
     ];
+    const DriverOptions = [
+        { id: 1, title: strings.editProfile, icon: 'person', onPress: () => navigation.navigate("EditScreen")},
+        { id: 2, title: strings.tripHistorytitle, icon: 'location', onPress: () => navigation.navigate('TripHistoryScreen') },
+        { id: 3, title: strings.activeMisssion, icon: 'wallet', onPress: () => navigation.navigate('ActiveMission') },
+    ];
+
+    const role = '2';
 
     return (
         <SafeAreaView style={styles.container}>
             <CommonHeader
                 title={strings.accountTitle}
-                onBackPress={() => console.log("Go Back")}
+                onBackPress={() => navigation.goBack()}
             />
 
             <ScrollView
@@ -54,18 +66,20 @@ const ProfileScreen = () => {
                     <Text style={styles.userPhone}>{strings.userPhonePlaceholder}</Text>
                 </View>
                 <View style={styles.menuContainer}>
-                    <View style={styles.card}>
+                    {role === "2" ? <View style={styles.card}>
                         {profileOptions.map((item, index) => (
                             <MenuRowItem key={item.id} item={item} isLast={index === profileOptions.length - 1} />
                         ))}
-                    </View>
-
-                    <View style={styles.card}>
+                    </View> : <View style={styles.card}>
+                        {DriverOptions.map((item, index) => (
+                            <MenuRowItem key={item.id} item={item} isLast={index === profileOptions.length - 1} />
+                        ))}
+                    </View>}
+                    {role === "2" && <View style={styles.card}>
                         {securityOptions.map((item, index) => (
                             <MenuRowItem key={item.id} item={item} isLast={index === securityOptions.length - 1} />
                         ))}
-                    </View>
-
+                    </View>}
                     <View style={styles.card}>
                         {appOptions.map((item, index) => (
                             <MenuRowItem key={item.id} item={item} isLast={index === appOptions.length - 1} />
@@ -101,7 +115,7 @@ export default ProfileScreen;
 const getStyles = (colors, fonts, metrics) => StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: colors.background,
+        backgroundColor: colors.screenBg,
     },
     scrollContent: {
         paddingHorizontal: metrics.padding.veryHigh,

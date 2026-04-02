@@ -8,9 +8,9 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from '@react-native-vector-icons/ionicons';
 import { RFValue } from 'react-native-responsive-fontsize';
-import { useTheme } from '../../common/ThemeContest';
-import strings from '../../units/CommonStrings';
-import DriverOfflineBottomPanel from './components/DriverOfflineBottomPanel'; 
+import { useTheme } from '../../../common/ThemeContest';
+import strings from '../../../units/CommonStrings';
+// import DriverOfflineBottomPanel from '../../driverScreens/components/DriverOfflineBottomPanel'; 
 import DriverOnlineBottomOverlay from './components/DriverOnlineBottomOverlay';
 
 const DriverOfflineScreen = () => {
@@ -18,7 +18,7 @@ const DriverOfflineScreen = () => {
     const styles = getStyles(colors, fonts, metrics);
 
     return (
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={styles.container} edges={['top','bottom']}>
             <View style={styles.header}>
                 <View style={styles.headerSide} />
                 <Text style={styles.brandTitle}>{strings.driverAppName}</Text>

@@ -1,5 +1,4 @@
-// src/screens/rider_screens/home_screen/DestinationSearchScreen.js
-import React, { useState, useRef, useMemo } from 'react';
+import React, { useState, useRef, useMemo, useEffect } from 'react';
 import {
     View,
     Text,
@@ -13,6 +12,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import CommonColors from '../../../units/CommonColor';
 import SearchBar from '../../../components/SearchBar';
 import CommonHeader from '../../../components/CommonHeader';
+import CommonButton from '../../../components/CommonBtn'; // Button Import Kiya
 import SuggestionCard from './components/SuggestionCard';
 import SavedLocationRow from './components/SavedLocationRow';
 import { useTheme } from "../../../common/ThemeContest";
@@ -33,49 +33,54 @@ const SUGGESTIONS = [
 ];
 
 const SAVED_LOCATIONS = [
-    {
-        id: 'home',
-        label: 'Home',
-        address: '245 E 44th St, Manhattan',
-        icon: 'home',
-    },
-    {
-        id: 'work',
-        label: 'Work',
-        address: 'One World Trade Center',
-        icon: 'work',
-    },
-    {
-        id: 'recent',
-        label: 'JFK Airport',
-        address: 'Queens, NY 11430',
-        icon: 'history',
-    },
+    { id: 'home', label: 'Home', address: '245 E 44th St, Manhattan', icon: 'home' },
+    { id: 'work', label: 'Work', address: 'One World Trade Center', icon: 'work' },
+    { id: 'recent', label: 'JFK Airport', address: 'Queens, NY 11430', icon: 'history' },
 ];
 
+// 1. "route" ko props mein add kiya taaki HomeScreen ka data mil sake
+const DestinationSearchScreen = ({ navigation, route }) => {
+    
+    // 2. Do alag states banaye: Pickup (Kahan se) aur Dropoff (Kahan tak)
+    const [pickupText, setPickupText] = useState('Current Location'); 
+    const [dropoffText, setDropoffText] = useState('');
 
-const DestinationSearchScreen = ({ navigation }) => {
-    const [searchText, setSearchText] = useState('');
-    const inputRef = useRef(null);
     const { fonts, metrics } = useTheme();
     const styles = useMemo(() => createStyles(fonts, metrics), [fonts, metrics]);
+
+    // 3. HomeScreen se aaya hua text Dropoff mein auto-fill karne ke liye
+    useEffect(() => {
+        if (route.params?.initialQuery) {
+            setDropoffText(route.params.initialQuery);
+        }
+    }, [route.params?.initialQuery]);
+
     const filteredSuggestions = SUGGESTIONS.filter(
         (s) =>
-            searchText === '' ||
-            s.name.toLowerCase().includes(searchText.toLowerCase())
+            dropoffText === '' ||
+            s.name.toLowerCase().includes(dropoffText.toLowerCase())
     );
 
-    const handleSearch = () => {
-
+    // 4. Continue Button ka function jo SelectRides par bhejega
+    const handleContinue = () => {
+        if (pickupText.trim() !== '' && dropoffText.trim() !== '') {
+            navigation.navigate('SelectRides', {
+                pickupLocation: pickupText,
+                dropoffLocation: dropoffText
+            });
+        }
     };
+
+    // Button tabhi active hoga jab dono fields bhari hongi
+    const isButtonEnabled = pickupText.trim().length > 0 && dropoffText.trim().length > 0;
+
     return (
         <SafeAreaView style={styles.safeArea}>
             <StatusBar barStyle="dark-content" backgroundColor={CommonColors.background} />
 
-            {/* ── Header ── */}
             <CommonHeader
                 title={strings.searchTitle}
-                onBackPress={() => console.log("Go Back")}
+                onBackPress={() => navigation.goBack()}
             />
 
             <ScrollView
@@ -88,10 +93,36 @@ const DestinationSearchScreen = ({ navigation }) => {
                     <Text style={styles.heroTitle}>{strings.whereTo}</Text>
                 </View>
 
-                <SearchBar
-                    value={searchText}
-                    onChangeText={setSearchText}
-                    onSubmit={handleSearch}
+                {/* ── 5. Yahan 2 Search Bars lagaye gaye hain ── */}
+                <View style={styles.searchContainer}>
+                    <SearchBar
+                        value={pickupText}
+                        onChangeText={setPickupText}
+                        placeholder="Pickup Location (Kahan se?)"
+                    />
+                    
+                    {/* Connecting Line Effect (Optional UI detail) */}
+                    <View style={styles.connectorContainer}>
+                        <View style={styles.connectorLine} />
+                    </View>
+
+                    <SearchBar
+                        value={dropoffText}
+                        onChangeText={setDropoffText}
+                        placeholder="Dropoff Location (Kahan tak?)"
+                    />
+                </View>
+
+                {/* ── Continue Button ── */}
+                <CommonButton
+                    title="Continue to Rides"
+                    backgroundColor={isButtonEnabled ? CommonColors.primary : '#E0E0E0'}
+                    textColor={isButtonEnabled ? CommonColors.white : '#888888'}
+                    height={metrics.windowHeight * 0.065}
+                    borderRadius={metrics.borderRadius.high}
+                    marginTop={metrics.margin.high}
+                    onPress={handleContinue}
+                    disabled={!isButtonEnabled} // Jab tak dono field nahi bhari, button disable rahega
                 />
 
                 <View style={styles.section}>
@@ -124,7 +155,6 @@ const DestinationSearchScreen = ({ navigation }) => {
                         style={styles.mapImage}
                         resizeMode="cover"
                     />
-                    {/* Overlay */}
                     <View style={styles.mapOverlay} />
                     <TouchableOpacity style={styles.mapButton} activeOpacity={0.85}>
                         <Text style={styles.mapButtonText}>Select on Map</Text>
@@ -136,29 +166,10 @@ const DestinationSearchScreen = ({ navigation }) => {
     );
 };
 
-
 const createStyles = (fonts, metrics) => StyleSheet.create({
     safeArea: {
         flex: 1,
-        backgroundColor: CommonColors.background,
-    },
-    header: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        paddingHorizontal: metrics.padding.veryHigh,
-        paddingTop: metrics.padding.high,
-        paddingBottom: metrics.padding.medium,
-        backgroundColor: CommonColors.background,
-    },
-    backButton: {
-        padding: metrics.padding.tiny,
-        marginRight: metrics.margin.tiny,
-    },
-    headerTitle: {
-        fontFamily: fonts.bold,
-        fontSize: RFValue(20),
-        letterSpacing: -0.4,
-        color: CommonColors.primary,
+        backgroundColor: CommonColors.screenBg,
     },
     scroll: {
         flex: 1,
@@ -169,7 +180,7 @@ const createStyles = (fonts, metrics) => StyleSheet.create({
     },
     heroSection: {
         marginTop: metrics.margin.veryHigh,
-        marginBottom: metrics.margin.veryHigh * 1.15,
+        marginBottom: metrics.margin.veryHigh, // Thoda margin adjust kiya
     },
     heroTitle: {
         fontFamily: fonts.bold,
@@ -178,27 +189,27 @@ const createStyles = (fonts, metrics) => StyleSheet.create({
         color: CommonColors.primary,
         lineHeight: RFValue(54),
     },
-    searchWrapper: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        height: metrics.windowHeight * 0.065,
-        backgroundColor: CommonColors.white,
-        borderRadius: metrics.borderRadius.medium,
-        paddingHorizontal: metrics.padding.veryHigh,
-        gap: metrics.padding.medium,
-        shadowColor: CommonColors.primary,
-        shadowOffset: { width: 0, height: 8 },
-        shadowOpacity: 0.06,
-        shadowRadius: metrics.borderRadius.extraHigh,
-        elevation: 4,
+    // Nayi styling 2 search bars ke liye
+    searchContainer: {
+        backgroundColor: CommonColors.background,
+        padding: metrics.padding.medium,
+        borderRadius: metrics.borderRadius.high,
+        shadowColor: CommonColors.black,
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.05,
+        shadowRadius: 10,
+        elevation: 3,
     },
-    searchInput: {
-        flex: 1,
-        fontFamily: fonts.regular,
-        fontSize: RFValue(16),
-        color: CommonColors.primary,
-        padding: metrics.padding.none,
-        margin: metrics.margin.none,
+    connectorContainer: {
+        height: 12,
+        justifyContent: 'center',
+        paddingLeft: 22, // Taki connector line search icon ke theek neeche aaye
+    },
+    connectorLine: {
+        width: 2,
+        height: '100%',
+        backgroundColor: CommonColors.border,
+        borderRadius: 1,
     },
     section: {
         marginTop: metrics.margin.extraHigh,
@@ -214,6 +225,9 @@ const createStyles = (fonts, metrics) => StyleSheet.create({
     },
     suggestionList: {
         gap: metrics.padding.low,
+    },
+    savedList: {
+        // yahan bhi aayega
     },
     mapPreview: {
         marginTop: metrics.margin.massive,

@@ -28,7 +28,7 @@ const EarningsScreen = ({ navigation }) => {
     const handleWithdraw = () => console.log('Withdraw earnings pressed');
 
     return (
-        <SafeAreaView style={styles.safeArea}>
+        <SafeAreaView style={styles.safeArea} edges={['top', 0]}>
             <StatusBar barStyle="dark-content" backgroundColor={CommonColors.white} />
 
             <CommonHeader
@@ -93,7 +93,7 @@ const EarningsScreen = ({ navigation }) => {
 const createStyles = (fonts, metrics) => StyleSheet.create({
     safeArea: {
         flex: 1,
-        backgroundColor: CommonColors.white,
+        backgroundColor:CommonColors.screenBg,
     },
     calendarBtn: {
         width: metrics.margin.massive,
@@ -103,7 +103,6 @@ const createStyles = (fonts, metrics) => StyleSheet.create({
     },
     scroll: {
         flex: 1,
-        backgroundColor: CommonColors.background,
     },
     scrollContent: {
         paddingHorizontal: metrics.padding.high,
@@ -243,7 +242,7 @@ const createStyles = (fonts, metrics) => StyleSheet.create({
         backgroundColor: CommonColors.screenBg,
         borderRadius: metrics.borderRadius.high,
         padding: metrics.padding.high,
-        height:metrics.windowWidth * 0.5,
+        height: metrics.windowWidth * 0.5,
         flexDirection: 'row',
         alignItems: 'flex-end',
         justifyContent: 'space-between',
