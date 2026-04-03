@@ -15,7 +15,7 @@ import CommonInput from "../../../components/CommonInput";
 import strings from "../../../units/CommonStrings";
 import { useTheme } from "../../../common/ThemeContest";
 
-const CreateAccountScreen = () => {
+const CreateAccountScreen = ({navigation}) => {
 
     const { colors, fonts, metrics } = useTheme();
     const styles = getStyles(colors, fonts, metrics);
@@ -127,7 +127,7 @@ const CreateAccountScreen = () => {
                         />
                         <Text style={styles.loginText}>
                             {strings.alreadyAccount}
-                            <Text style={styles.loginLink} onPress={() => console.log("Navigate to Login")}>
+                            <Text style={styles.loginLink} onPress={() => navigation.goBack()}>
                                 {strings.login}
                             </Text>
                         </Text>
@@ -247,7 +247,7 @@ const getStyles = (colors, fonts, metrics) => StyleSheet.create({
         fontFamily: fonts.medium,
         color: colors.textLight,
         textAlign: "center",
-        marginTop: metrics.margin.low,
+        marginTop: metrics.margin.veryHigh,
     },
     loginLink: {
         color: colors.primary,

@@ -92,7 +92,7 @@ const LoginScreen = () => {
                     <View style={styles.signupContainer}>
                         <Text style={styles.signupText}>
                             {strings.dontHaveAccount}
-                            <Text style={styles.signupLink} onPress={() => console.log("Navigate to Create Account")}>
+                            <Text style={styles.signupLink} onPress={() => navigation.navigate("CreateAccount")}>
                                 {strings.createAccount}
                             </Text>
                         </Text>

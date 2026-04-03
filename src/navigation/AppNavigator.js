@@ -9,7 +9,7 @@ import DriverTabNavigator from './DriverTabNavigator';
 const Stack = createNativeStackNavigator();
 
 export default function AppNavigator() {
-    const isLoggedIn = true;
+    const isLoggedIn = false;
 
     return (
         <NavigationContainer>
