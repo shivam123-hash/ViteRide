@@ -45,10 +45,19 @@ const silentReLogin = async () => {
 };
 
 api.interceptors.request.use(async (config) => {
-  const token = await TokenService.getAccessToken();
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+  const url = config.url || '';
+
+  const skipAuth =
+    url.includes(API_ROUTES.LOGIN_AUTH) ||
+    url.includes(API_ROUTES.REGISTER_AUTH);
+
+  if (!skipAuth) {
+    const token = await TokenService.getAccessToken();
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
   }
+
   return config;
 });
 
