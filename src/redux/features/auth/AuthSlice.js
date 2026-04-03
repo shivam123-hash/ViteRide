@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { loginService,getProfileService} from "../../../services/authServices";
-import { clearUserData, getUserData, saveUserData,  } from "../../../units/asyncStorageManager";
+import { loginService, registerService } from "../../../services/AuthServices";
+import { clearUserData, getUserData, saveUserData } from "../../../units/AsyncStorageManager";
 
 export const login = createAsyncThunk(
     'auth/login',
@@ -8,13 +8,29 @@ export const login = createAsyncThunk(
         try {
             const response = await loginService(userData);
             saveUserData(response.data);
-            dispatch(getProfile());
             return response.data;
         } catch (error) {
             return rejectWithValue(
                 error?.response?.data?.message ||
                 error?.message ||
                 'Login Failed'
+            );
+        }
+    }
+);
+
+export const register = createAsyncThunk(
+    'auth/register',
+    async (userData, { rejectWithValue }) => {
+        try {
+            const response = await registerService(userData);
+            return response.data;
+        } catch (error) {
+            console.log(error, 'error+++++++++')
+            return rejectWithValue(
+                error?.response?.data?.message ||
+                error?.message ||
+                'Registration Failed'
             );
         }
     }
@@ -27,9 +43,7 @@ export const loadInitialState = createAsyncThunk(
             const storedData = await getUserData();
             const { user, role, accessToken } = storedData || {};
             if (accessToken) {
-                dispatch(getProfile());
             }
-
             return {
                 user: user || null,
                 role: role || null,
@@ -38,22 +52,6 @@ export const loadInitialState = createAsyncThunk(
             };
         } catch (error) {
             throw error;
-        }
-    }
-);
-
-export const getProfile = createAsyncThunk(
-    'auth/getProfile',
-    async (_, { rejectWithValue }) => {
-        try {
-            const response = await getProfileService();
-            return response.data;
-        } catch (error) {
-            return rejectWithValue(
-                error?.response?.data?.message ||
-                error?.message ||
-                'Get profile failed'
-            );
         }
     }
 );
@@ -90,7 +88,6 @@ const authSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
-
             .addCase(login.pending, (state) => {
                 state.loading = true;
                 state.error = null;
@@ -109,7 +106,19 @@ const authSlice = createSlice({
                 state.isLoggedIn = false;
                 state.error = action.payload || 'Something went wrong';
             })
-
+            .addCase(register.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+                state.message = null;
+            })
+            .addCase(register.fulfilled, (state, action) => {
+                state.loading = false;
+                state.message = action.payload?.message || 'Registration Successful';
+            })
+            .addCase(register.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload || 'Registration failed';
+            })
             .addCase(loadInitialState.pending, (state) => {
                 state.mainloading = true;
             })
@@ -123,23 +132,7 @@ const authSlice = createSlice({
             .addCase(loadInitialState.rejected, (state) => {
                 state.mainloading = false;
                 state.isLoggedIn = false;
-            })
-
-            .addCase(getProfile.pending, (state) => {
-                state.profileLoading = true;
-            })
-            .addCase(getProfile.fulfilled, (state, action) => {
-                state.profileLoading = false;
-                state.user = {
-                    ...state.user,
-                    ...(action.payload?.user || action.payload),
-                };
-                state.role = action.payload?.user?.role || action.payload?.role || state.role;
-                console.log(action.payload, 'getProfile action payload');
-            })
-            .addCase(getProfile.rejected, (state, action) => {
-                state.profileLoading = false;
-            })
+            });
     },
 });
 

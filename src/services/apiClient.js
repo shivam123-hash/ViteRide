@@ -1,9 +1,10 @@
 import axios from "axios";
-import { tokenService } from "../units/tokenServices";
+
 import { logout } from "../redux/features/auth/AuthSlice";
 import { getStore } from "../redux/store";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import API_ROUTES from "../redux/endPoints/ApiRoutes";
+import { TokenService } from "../units/TokenServices";
 
 const BASE_URL = "http://157.180.30.0:4000";
 
@@ -28,13 +29,12 @@ const silentReLogin = async () => {
     if (!raw) {
       return null;
     }
-
     const credentials = JSON.parse(raw);
     const response = await axios.post(`${BASE_URL}${API_ROUTES.LOGIN_AUTH}`, credentials);
     const newToken = response?.data?.accessToken || response?.data?.access_token;
 
     if (newToken) {
-      await tokenService.setTokens(newToken, null);
+      await TokenService.setTokens(newToken, null);
       return newToken;
     }
 
@@ -45,7 +45,7 @@ const silentReLogin = async () => {
 };
 
 api.interceptors.request.use(async (config) => {
-  const token = await tokenService.getAccessToken();
+  const token = await TokenService.getAccessToken();
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -84,7 +84,7 @@ api.interceptors.response.use(
       }
       processQueue(null, null);
       isRefreshing = false;
-      await tokenService.clearTokens();
+      await TokenService.clearTokens();
       getStore().dispatch(logout());
       return Promise.reject(error);
     }

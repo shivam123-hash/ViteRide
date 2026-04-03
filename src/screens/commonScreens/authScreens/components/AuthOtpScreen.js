@@ -14,7 +14,7 @@ import strings from '../../../../units/CommonStrings';
 import { RFValue } from 'react-native-responsive-fontsize';
 import CommonButton from '../../../../components/CommonBtn';
 import Ionicons from '@react-native-vector-icons/ionicons';
-import OtpInput from '../../../../components/CommonInput';
+import OtpInput from '../../../../components/OtpInput';
 import { useNavigation } from '@react-navigation/native';
 
 const OtpScreen = () => {

@@ -29,7 +29,7 @@ const CommanInput = ({
   return (
     <View style={[styles.inputContainer, style]}>
 
-      {/* {!isPasswordField && iconName && (
+      {!isPasswordField && iconName && (
         <Ionicons
           name={iconName}
           size={iconSize}
@@ -46,7 +46,7 @@ const CommanInput = ({
             style={styles.icon}
           />
         </TouchableOpacity>
-      )} */}
+      )}
       <TextInput
         style={[styles.input, textInput]}
         placeholder={placeholder}
