@@ -5,7 +5,7 @@ import api from './apiClient';
 import { tokenService } from '../units/TokenServices';
 
 export const loginService = async (userData) => {
-    console.log(userData,'userDataa+++++++')
+    console.log(userData, 'userDataa+++++++')
     try {
         const response = await api.post(API_ROUTES.LOGIN_AUTH, userData);
         // const accessToken = response?.data?.accessToken || response?.data?.access_token;
@@ -14,7 +14,7 @@ export const loginService = async (userData) => {
         //     await tokenService.setTokens(accessToken, null);
         //     await AsyncStorage.setItem('user_credentials', JSON.stringify(userData));
         // }
-        console.log(response,'response++++')
+        console.log(response, 'response++++')
         return response;
     } catch (error) {
         console.log('errror', error)
@@ -30,7 +30,7 @@ export const registerService = async (userData) => {
         if (accessToken) {
             await tokenService.setTokens(accessToken, null);
         }
-        console.log('error:',response)
+        console.log('error:', response)
         return response;
     } catch (error) {
         console.log("--- API CRASH REPORT ---");
@@ -46,5 +46,6 @@ export const registerService = async (userData) => {
 }
 
 export const verifyOtpService = async (payload) => {
-  return api.post(API_ROUTES.VERIFY_OTP, payload);
+    console.log('Calling verifyOtpService with:', payload);
+    return api.post(API_ROUTES.VERIFY_OTP, payload);
 };

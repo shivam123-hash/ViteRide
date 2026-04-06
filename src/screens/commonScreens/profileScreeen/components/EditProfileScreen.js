@@ -127,8 +127,8 @@ const EditProfileScreen = () => {
                             </View>
                         </View>
                     </View>
-                    <View style={styles.divider} />
-                    <Text style={styles.securityTitle}>{strings.accountSecurityTitle}</Text>
+                    {/* <View style={styles.divider} /> */}
+                    {/* <Text style={styles.securityTitle}>{strings.accountSecurityTitle}</Text>
                     <TouchableOpacity style={styles.securityCard} activeOpacity={0.7} onPress={() => console.log('Update Password')}>
                         <View style={styles.securityIconBox}>
                             <Ionicons name="sync-circle-outline" size={metrics.iconSize.high} color={colors.textPrimary} />
@@ -138,7 +138,7 @@ const EditProfileScreen = () => {
                             <Text style={styles.securityCardSubtitle}>{strings.lastChanged}</Text>
                         </View>
                         <Ionicons name="chevron-forward" size={metrics.iconSize.medium} color="#D1D5DB" />
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
                     <CommonButton
                         title={strings.saveChanges}
                         backgroundColor={colors.primary}

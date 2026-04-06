@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
     StyleSheet,
     Text,
     View,
     ScrollView,
-    TouchableOpacity,
+    ActivityIndicator,
     Image,
 } from "react-native";
 import Ionicons from '@react-native-vector-icons/ionicons';
@@ -16,8 +16,9 @@ import strings from "../../../units/CommonStrings";
 import { useTheme } from "../../../common/ThemeContest";
 import MenuRowItem from './components/MenuRowItem';
 import { useNavigation } from "@react-navigation/native";
-import { useDispatch } from "react-redux";
-import { login, logout } from "../../../redux/features/auth/AuthSlice";
+import { useDispatch,useSelector } from "react-redux";
+import { logout } from "../../../redux/features/auth/AuthSlice";
+import { getUserProfile } from "../../../redux/features/profile/ProfileSlice";
 import { clearUserData } from "../../../units/AsyncStorageManager";
 
 const ProfileScreen = () => {
@@ -26,16 +27,21 @@ const ProfileScreen = () => {
     const styles = getStyles(colors, fonts, metrics);
     const navigation = useNavigation();
     const dispatch = useDispatch();
+const { user, loading } = useSelector((state) => state.profile);
+
+    useEffect(() => {
+        dispatch(getUserProfile());
+    }, [dispatch]);
 
     const profileOptions = [
-        { id: 1, title: strings.editProfile, icon: 'person', onPress: () => console.log('Edit Profile') },
-        { id: 2, title: strings.savedAddresses, icon: 'location', onPress: () => console.log('Addresses') },
+        { id: 1, title: strings.editProfile, icon: 'person', onPress: () => navigation.navigate('EditProfile') },
+        { id: 2, title: strings.savedAddresses, icon: 'location', onPress: () => navigation.navigate('SavedAddresses') },
         { id: 3, title: strings.paymentMethods, icon: 'wallet', onPress: () => console.log('Payments') },
-        { id: 4, title: strings.driverMode, icon: 'wallet', onPress: () => navigation.navigate('DriverAuthFlow') },
+        { id: 4, title: strings.driverMode, icon: 'wallet', onPress: () => navigation.navigate('DriverRegistration') },
 
     ];
     const securityOptions = [
-        { id: 4, title: strings.emergencyContacts, icon: 'id-card', onPress: () => console.log('Emergency') },
+        { id: 4, title: strings.emergencyContacts, icon: 'id-card', onPress: () => navigation.navigate('HelpSupport') },
     ];
     const appOptions = [
         { id: 5, title: strings.settings, icon: 'settings', onPress: () => console.log('Settings') },
@@ -47,6 +53,20 @@ const ProfileScreen = () => {
     ];
 
     const role = '2';
+
+     if (loading) {
+        return (
+            <SafeAreaView style={styles.container}>
+                <CommonHeader
+                    title={strings.accountTitle}
+                    onBackPress={() => navigation.goBack()}
+                />
+                <View style={styles.loaderContainer}>
+                    <ActivityIndicator size='large' color={colors.primary} />
+                </View>
+            </SafeAreaView>
+        );
+    }
 
     return (
         <SafeAreaView style={styles.container}>
@@ -66,8 +86,8 @@ const ProfileScreen = () => {
                             style={styles.profileImage}
                         />
                     </View>
-                    <Text style={styles.userName}>{strings.userNamePlaceholder}</Text>
-                    <Text style={styles.userPhone}>{strings.userPhonePlaceholder}</Text>
+                    <Text style={styles.userName}>{user?.name }</Text>
+                    <Text style={styles.userPhone}>{user?.phone }</Text>
                 </View>
                 <View style={styles.menuContainer}>
                     {role === "2" ? <View style={styles.card}>

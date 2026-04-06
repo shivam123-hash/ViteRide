@@ -55,7 +55,7 @@ const CreateAccountScreen = () => {
 
             // 5. Navigate to OTP screen, passing the phone and dev_otp so you can use it there
             navigation.navigate("OTP", { 
-                phone: phone.trim(), 
+                phone: `+91${phone.trim()}`, 
                 devOtp: response.dev_otp 
             });
 

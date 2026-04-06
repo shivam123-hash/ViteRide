@@ -11,6 +11,9 @@ import TripSummaryScreen from '../screens/rider_screens/trip_summary/TripSummary
 import EditProfileScreen from '../screens/commonScreens/profileScreeen/components/EditProfileScreen';
 import ProfileScreen from '../screens/commonScreens/profileScreeen/ProfileScreen';
 import LoginScreen from '../screens/commonScreens/authScreens/LoginScreen';
+import DriverRegistrationFlowScreen from '../screens/commonScreens/authScreens/driverAuthScreens/DriverRegistrationFlowScreen';
+import SavedAddressesScreen from '../screens/commonScreens/profileScreeen/components/SavedAddressesScreen';
+import HelpSupportScreen from '../screens/commonScreens/profileScreeen/HelpSupportScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -18,8 +21,10 @@ export default function UserNavigator() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="UserHome" component={HomeScreen} />
-       <Stack.Screen name='Profile' component={ProfileScreen} />
-      <Stack.Screen name="UserProfile" component={EditProfileScreen} />
+      <Stack.Screen name='Profile' component={ProfileScreen} />
+      <Stack.Screen name="EditProfile" component={EditProfileScreen} />
+      <Stack.Screen name="SavedAddresses" component={SavedAddressesScreen} />
+      <Stack.Screen name="HelpSupport" component={HelpSupportScreen} />
       <Stack.Screen name="Search" component={SearchScreen} />
       <Stack.Screen name="SelectRides" component={SelectRidesScreen} />
       <Stack.Screen name="ProposeFare" component={ProposeFareScreen} />
@@ -27,7 +32,8 @@ export default function UserNavigator() {
       <Stack.Screen name="BookForOthers" component={BookForOthersScreen} />
       <Stack.Screen name="InTransit" component={InTransitScreen} />
       <Stack.Screen name="TripSummary" component={TripSummaryScreen} />
-       <Stack.Screen name="Login" component={LoginScreen} />
+      <Stack.Screen name="DriverRegistration" component={DriverRegistrationFlowScreen} />
+      <Stack.Screen name="Login" component={LoginScreen} />
     </Stack.Navigator>
   );
 }

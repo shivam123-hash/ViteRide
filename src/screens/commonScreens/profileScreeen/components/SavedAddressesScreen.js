@@ -13,9 +13,10 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import CommonHeader from "../../../../components/CommonHeader";
 import strings from "../../../../units/CommonStrings";
 import { useTheme } from "../../../../common/ThemeContest";
+import { useNavigation } from "@react-navigation/native";
 
 const SavedAddressesScreen = () => {
-
+    const navigation = useNavigation();
     const { colors, fonts, metrics } = useTheme();
     const styles = getStyles(colors, fonts, metrics);
     const savedAddresses = [
@@ -42,7 +43,7 @@ const SavedAddressesScreen = () => {
         <SafeAreaView style={styles.container}>
             <CommonHeader
                 title={strings.savedAddressesHeader}
-                onBackPress={() => console.log("Go Back")}
+                onBackPress={() => navigation.goBack()}
                 rightIconName="ellipsis-vertical"
                 onRightPress={() => console.log("Options Menu")}
             />

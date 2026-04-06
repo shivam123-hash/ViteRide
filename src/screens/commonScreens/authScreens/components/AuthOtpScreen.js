@@ -36,19 +36,21 @@ const OtpScreen = () => {
     const handleVerifyOtp = async () => {
         const trimmedOtp = otp?.trim();
 
-        if (!phone) {
-            Alert.alert('Error', 'Phone number not found. Please go back and try again.');
-            return;
-        }
+        // if (!phone) {
+        //     Alert.alert('Error', 'Phone number not found. Please go back and try again.');
+        //     return;
+        // }
 
-        if (!trimmedOtp || trimmedOtp.length < 6) {
-            Alert.alert('Invalid OTP', 'Please enter a valid OTP.');
-            return;
-        }
+        // if (!trimmedOtp || trimmedOtp.length < 6) {
+        //     Alert.alert('Invalid OTP', 'Please enter a valid OTP.');
+        //     return;
+        // }
 
         try {
             dispatch(resetAuthError());
 
+            console.log('Dispatching verifyOtp with:', { phone, otp: trimmedOtp });
+console.log("HBKJBKJB");
             const response = await dispatch(
                 verifyOtp({
                     phone,
@@ -57,6 +59,8 @@ const OtpScreen = () => {
                     // code: trimmedOtp,
                 })
             ).unwrap();
+
+            console.log('OTP verification successful:', response);
 
             Alert.alert(
                 'Success',
@@ -72,6 +76,7 @@ const OtpScreen = () => {
             //     routes: [{ name: 'MainApp' }],
             // });
         } catch (error) {
+            console.error('OTP verification failed:', error);
             Alert.alert(
                 'Verification Failed',
                 typeof error === 'string' ? error : 'Invalid OTP. Please try again.'
