@@ -1,15 +1,20 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { loginService, registerService } from "../../../services/AuthServices";
+import { loginService, registerService, verifyOtpService } from "../../../services/AuthServices";
 import { clearUserData, getUserData, saveUserData } from "../../../units/AsyncStorageManager";
+import { TokenService } from "../../../units/TokenServices";
 
 export const login = createAsyncThunk(
     'auth/login',
     async (userData, { rejectWithValue, dispatch }) => {
+        console.log(userData, 'userData+++=')
         try {
             const response = await loginService(userData);
-            saveUserData(response.data);
+            // saveUserData(response.data);
+            console.log(response, 'response_++__+__+_')
+            console.log(response.data, 'response_++__+__+_')
             return response.data;
         } catch (error) {
+            console.log(error, 'error++++_++_')
             return rejectWithValue(
                 error?.response?.data?.message ||
                 error?.message ||
@@ -56,6 +61,40 @@ export const loadInitialState = createAsyncThunk(
     }
 );
 
+export const verifyOtp = createAsyncThunk(
+    "auth/verifyOtp",
+    async (payload, { rejectWithValue }) => {
+        try {
+            const response = await verifyOtpService(payload);
+            const data = response?.data || {};
+            const accessToken =
+                data?.accessToken || data?.access_token || data?.token || null;
+            const refreshToken =
+                data?.refreshToken || data?.refresh_token || null;
+            const user = data?.user || null;
+            const role = data?.user?.role || null;
+            if (accessToken || refreshToken) {
+                await TokenService.setTokens(accessToken, refreshToken);
+            }
+            await saveUserData({
+                user,
+                role,
+                accessToken,
+                refreshToken,
+            });
+            return data;
+        } catch (error) {
+            return rejectWithValue(
+                error?.response?.data?.message ||
+                error?.message ||
+                "OTP Verification Failed"
+            );
+        }
+    }
+);
+
+
+
 const initialState = {
     isLoggedIn: false,
     user: null,
@@ -95,7 +134,7 @@ const authSlice = createSlice({
             })
             .addCase(login.fulfilled, (state, action) => {
                 state.loading = false;
-                state.isLoggedIn = true;
+                // state.isLoggedIn = true;
                 state.user = action.payload?.user || null;
                 state.role = action.payload?.user?.role || null;
                 state.accessToken = action.payload?.accessToken || null;
@@ -132,7 +171,31 @@ const authSlice = createSlice({
             .addCase(loadInitialState.rejected, (state) => {
                 state.mainloading = false;
                 state.isLoggedIn = false;
-            });
+            })
+
+            .addCase(verifyOtp.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+                state.message = null;
+            })
+            .addCase(verifyOtp.fulfilled, (state, action) => {
+                state.loading = false;
+                state.isLoggedIn = true;
+                state.user = action.payload?.user || null;
+                state.role = action.payload?.user?.role || null;
+                state.accessToken =
+                    action.payload?.accessToken ||
+                    action.payload?.access_token ||
+                    action.payload?.token ||
+                    null;
+                state.message =
+                    action.payload?.message || "OTP verified successfully";
+            })
+            .addCase(verifyOtp.rejected, (state, action) => {
+                state.loading = false;
+                state.isLoggedIn = false;
+                state.error = action.payload || "OTP verification failed";
+            })
     },
 });
 

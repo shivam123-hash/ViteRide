@@ -18,6 +18,7 @@ import EditProfileScreen from '../screens/commonScreens/profileScreeen/component
 import TripHistoryScreen from '../screens/driver_screens/trip_history_screen/TripHistoryScreen';
 import MissionScreen from '../screens/driver_screens/mission_screens/MissionScreens';
 import HelpInfoScreen from '../screens/driver_screens/help_info_screen/HelpInfoScreen';
+import LoginScreen from '../screens/commonScreens/authScreens/LoginScreen';
 
 
 const Tab = createBottomTabNavigator();
@@ -45,6 +46,7 @@ export const ProfileOption = () => {
             <Stack.Screen name='TripHistoryScreen' component={TripHistoryScreen} />
             <Stack.Screen name='ActiveMission' component={MissionScreen} />
             <Stack.Screen name='HelpInfoScreen' component={HelpInfoScreen} />
+             <Stack.Screen name="Login" component={LoginScreen} />
         </Stack.Navigator>
     )
 }

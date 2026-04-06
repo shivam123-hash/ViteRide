@@ -7,6 +7,7 @@ import DriverTabNavigator from './src/navigation/DriverTabNavigator';
 import { Provider } from 'react-redux';
 import store from './src/redux/store';
 import MapsScreen from './src/screens/MapsScreen';
+import OtpScreen from './src/screens/commonScreens/authScreens/components/AuthOtpScreen';
 
 function App() {
   const isDarkMode = useColorScheme() === 'dark';
@@ -21,6 +22,7 @@ function App() {
         <ThemeProvider>
           <AppNavigator />
           {/* <MapsScreen /> */}
+          {/* <OtpScreen /> */}
         </ThemeProvider>
       </Provider>
     </SafeAreaProvider>

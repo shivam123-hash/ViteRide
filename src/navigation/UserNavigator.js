@@ -10,6 +10,7 @@ import InTransitScreen from '../screens/rider_screens/in_transit_screen/InTransi
 import TripSummaryScreen from '../screens/rider_screens/trip_summary/TripSummaryScreen';
 import EditProfileScreen from '../screens/commonScreens/profileScreeen/components/EditProfileScreen';
 import ProfileScreen from '../screens/commonScreens/profileScreeen/ProfileScreen';
+import LoginScreen from '../screens/commonScreens/authScreens/LoginScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -26,6 +27,7 @@ export default function UserNavigator() {
       <Stack.Screen name="BookForOthers" component={BookForOthersScreen} />
       <Stack.Screen name="InTransit" component={InTransitScreen} />
       <Stack.Screen name="TripSummary" component={TripSummaryScreen} />
+       <Stack.Screen name="Login" component={LoginScreen} />
     </Stack.Navigator>
   );
 }

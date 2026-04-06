@@ -16,12 +16,16 @@ import strings from "../../../units/CommonStrings";
 import { useTheme } from "../../../common/ThemeContest";
 import MenuRowItem from './components/MenuRowItem';
 import { useNavigation } from "@react-navigation/native";
+import { useDispatch } from "react-redux";
+import { login, logout } from "../../../redux/features/auth/AuthSlice";
+import { clearUserData } from "../../../units/AsyncStorageManager";
 
 const ProfileScreen = () => {
 
     const { colors, fonts, metrics } = useTheme();
     const styles = getStyles(colors, fonts, metrics);
     const navigation = useNavigation();
+    const dispatch = useDispatch();
 
     const profileOptions = [
         { id: 1, title: strings.editProfile, icon: 'person', onPress: () => console.log('Edit Profile') },
@@ -37,7 +41,7 @@ const ProfileScreen = () => {
         { id: 5, title: strings.settings, icon: 'settings', onPress: () => console.log('Settings') },
     ];
     const DriverOptions = [
-        { id: 1, title: strings.editProfile, icon: 'person', onPress: () => navigation.navigate("EditScreen")},
+        { id: 1, title: strings.editProfile, icon: 'person', onPress: () => navigation.navigate("EditScreen") },
         { id: 2, title: strings.tripHistorytitle, icon: 'location', onPress: () => navigation.navigate('TripHistoryScreen') },
         { id: 3, title: strings.activeMisssion, icon: 'wallet', onPress: () => navigation.navigate('ActiveMission') },
     ];
@@ -103,7 +107,7 @@ const ProfileScreen = () => {
                             style={styles.logoutIcon}
                         />
                     }
-                    onPress={() => console.log("Logout Pressed")}
+                    onPress={() => dispatch(logout())}
                 />
             </ScrollView>
         </SafeAreaView>

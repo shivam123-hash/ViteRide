@@ -3,7 +3,7 @@ import { View, TextInput, StyleSheet } from "react-native";
 import { useTheme } from '../common/ThemeContest';
 import { RFValue } from "react-native-responsive-fontsize";
 
-const OtpInput = ({ length = 4, value, onChange }) => {
+const OtpInput = ({ length = 6, value, onChange }) => {
     const inputs = useRef([]);
 
     const { fonts, metrics , colors} = useTheme();
@@ -57,8 +57,8 @@ const createStyles = (fonts, metrics, colors) => StyleSheet.create({
         marginVertical: metrics.margin.veryHigh,
     },
     input: {
-        width: 60,
-        height: 80,
+        width: 40,
+        height: 55,
         borderRadius: metrics.borderRadius.medium,
         backgroundColor: "#fff",
         textAlign: "center",

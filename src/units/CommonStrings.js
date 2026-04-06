@@ -23,7 +23,7 @@ export default {
     firstNameLabel: "FIRST NAME",
     firstNamePlaceholder: "John Doe",
     emailLabel: "EMAIL ADDRESS",
-    emailPlaceholder: "johndoe@example.com",
+    emailPlaceholder: "john@example.com",
     phoneLabel: "PHONE NUMBER",
     passwordLabel: "PASSWORD",
     passwordPlaceholder: "********",

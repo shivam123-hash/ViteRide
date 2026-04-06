@@ -41,7 +41,7 @@ const CreateAccountScreen = () => {
         }
         const payload = {
             name: name.trim(),
-            phone: phone.trim(),
+            phone: `+91${phone.trim()}`,
             email: email.trim() || undefined, // Send email if provided, otherwise undefined
         };
 

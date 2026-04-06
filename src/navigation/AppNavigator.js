@@ -31,6 +31,7 @@ export default function AppNavigator() {
         <NavigationContainer>
             <Stack.Navigator screenOptions={{ headerShown: false }}>
                 {!isLoggedIn ? (
+                    
                     <Stack.Screen name="AuthFlow" component={AuthNavigator} />
                 ) : role === 'driver' || role === 'Driver' ? (
                     <Stack.Screen name="DriverFlow" component={DriverTabNavigator} />
