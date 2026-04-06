@@ -54,9 +54,11 @@ const CreateAccountScreen = () => {
             Alert.alert("Success", response.message || "OTP sent successfully!");
 
             // 5. Navigate to OTP screen, passing the phone and dev_otp so you can use it there
-            navigation.navigate("OTP", { 
-                phone: `+91${phone.trim()}`, 
-                devOtp: response.dev_otp 
+            navigation.navigate("OTP", {
+                phone: `+91${phone.trim()}`,
+                devOtp: response.dev_otp,
+                context: "register",
+                registerData: payload
             });
 
         } catch (error) {
@@ -130,7 +132,7 @@ const CreateAccountScreen = () => {
                                 textInput={styles.customTextInput}
                             />
                         </View>
-                        
+
                         <CommonButton
                             title={loading ? "Processing..." : strings.btnCreateAccount}
                             backgroundColor={loading ? colors.textLight : colors.primary}

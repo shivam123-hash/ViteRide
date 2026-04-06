@@ -12,12 +12,12 @@ import { RFValue } from "react-native-responsive-fontsize";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
-
 import CommonButton from "../../../components/CommonBtn";
 import CommonInput from "../../../components/CommonInput";
 import strings from "../../../units/CommonStrings";
 import { useTheme } from "../../../common/ThemeContest";
 import { login } from "../../../redux/features/auth/AuthSlice";
+import { showMessage } from "../../../redux/features/messageSlice/messageSlice";
 
 const LoginScreen = () => {
   const [phone, setPhone] = useState("");
@@ -31,12 +31,9 @@ const LoginScreen = () => {
 
   const formatPhoneForApi = (value) => {
     const digits = value.replace(/\D/g, "");
-
-    // user input field me sirf 10 digit expected hai
     if (digits.length === 10) {
       return `+91${digits}`;
     }
-
     return null;
   };
 
@@ -55,21 +52,21 @@ const LoginScreen = () => {
       const response = await dispatch(
         login({ phone: formattedPhone })
       ).unwrap();
-      console.log(response, 'response_++_++__++')
-
-      Alert.alert(
-        "Success",
-        response?.message 
+      dispatch(
+        showMessage({
+          text: response?.message || "OTP Sent successfully!",
+          type: "success",
+        })
       );
-
       navigation.navigate('OTP', {
         phone: formattedPhone,
+        context: 'login'
       });
     } catch (error) {
-      Alert.alert(
-        "Login Failed",
-        typeof error === "string" ? error : "Unable to send OTP."
-      );
+      dispatch(showMessage({
+        text: typeof error === "string" ? error : "Unable to send OTP.",
+        type: "error",
+      }))
     }
   };
 

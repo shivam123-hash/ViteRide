@@ -64,6 +64,7 @@ export const loadInitialState = createAsyncThunk(
 export const verifyOtp = createAsyncThunk(
     "auth/verifyOtp",
     async (payload, { rejectWithValue }) => {
+        console.log(payload, 'payload++++++')
         try {
             console.log('Verifying OTP with payload:', payload);
             const response = await verifyOtpService(payload);
@@ -87,7 +88,7 @@ export const verifyOtp = createAsyncThunk(
             console.log('OTP verification data:', data);
             return data;
         } catch (error) {
-            console.error('OTP verification failed:', error);
+            console.log(error, 'erroe++++')
             return rejectWithValue(
                 error?.response?.data?.message ||
                 error?.message ||
