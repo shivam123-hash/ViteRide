@@ -15,13 +15,17 @@ import CommonHeader from '../../../../components/CommonHeader';
 import RegistrationStepBar from '../components/RegistrationStepBar';
 import DriverRegistrationStepOneContent from './DriverRegistrationStepOne';
 import DriverRegistrationStepTwoContent from './DriverRegistrationStepTwo';
-import DriverRegistrationStepThreeContent from './/DriverRegistrationStepThreeContent';
+import DriverRegistrationStepThreeContent from './DriverRegistrationStepThreeContent';
 import DriverRegistrationStepFourContent from './DriverRegistrationStepFourContent';
 import GlobalMetrics from '../../../../units/GlobalMetricsStyles';
+import { useDispatch, useSelector } from 'react-redux';
+import { becomeDriver } from '../../../../redux/features/profile/BecomeDriverSlice';
+import { showMessage } from '../../../../redux/features/messageSlice/messageSlice';
 
 const DriverRegistrationFlowScreen = ({ navigation }) => {
     const { colors } = useTheme();
-
+    const dispatch = useDispatch();
+    const { loading } = useSelector((state) => state.becomeDriver);
     const styles = useMemo(() => createStyles(colors), [colors]);
 
     const [currentStep, setCurrentStep] = useState(1);
@@ -74,6 +78,37 @@ const DriverRegistrationFlowScreen = ({ navigation }) => {
     };
 
     const goNext = () => {
+        if (currentStep === 1 && !form.fullLegalName?.trim()) {
+            dispatch(showMessage({ text: 'Please enter your full legal name.', type: 'error' }));
+            return;
+        }
+
+        if (
+            currentStep === 2 && (
+                !form.vehicleCategory?.trim() ||
+                !form.vehicleMake?.trim() ||
+                !form.vehicleModel?.trim() ||
+                !form.vehicleYear?.trim() ||
+                !form.vehicleColor?.trim() ||
+                !form.plateNumber?.trim() 
+            )
+        ) {
+            dispatch(showMessage({ text: 'Please fill all vehicle details.', type: 'error' }));
+            return;
+        }
+
+        if (
+            currentStep === 3 && (
+                !form.documents.aadhaarCard ||
+                !form.documents.drivingLicense ||
+                !form.documents.registrationCertificate ||
+                !form.documents.insurancePolicy
+            )
+        ) {
+            dispatch(showMessage({ text: 'Please upload all required documents.', type: 'error' }));
+            return;
+        }
+
         if (currentStep < 4) {
             setCurrentStep((prev) => prev + 1);
         }
@@ -149,11 +184,44 @@ const DriverRegistrationFlowScreen = ({ navigation }) => {
         }
     };
 
-    const handleFinalSubmit = () => {
-        Alert.alert(
-            strings.driverRegistrationHeader,
-            'All 4 steps completed. Ready to submit API payload.'
-        );
+    const handleFinalSubmit = async () => {
+        if (loading) return;
+        try {
+            const response = await dispatch(
+                becomeDriver({
+                    fullLegalName: form.fullLegalName,
+                    professionalHeadline: form.professionalHeadline,
+                    profilePhoto: form.profilePhoto,
+                    vehicleCategory: form.vehicleCategory,
+                    vehicleMake: form.vehicleMake,
+                    vehicleModel: form.vehicleModel,
+                    vehicleYear: form.vehicleYear,
+                    vehicleColor: form.vehicleColor,
+                    plateNumber: form.plateNumber,
+                    documents: form.documents,
+                    bankName: form.bankName,
+                    accountNumber: form.accountNumber,
+                    ifscCode: form.ifscCode,
+
+                })
+            ).unwrap();
+
+            console.log('Driver registration response:', response);
+
+            dispatch(showMessage({
+                text: response?.message || 'Driver registration submitted successfully!',
+                type: 'success',
+            }));
+
+            navigation?.goBack();
+
+        } catch (error) {
+            console.log('Driver registration error:', error);
+            dispatch(showMessage({
+                text: typeof error === 'string' ? error : 'Unable to submit registration.',
+                type: 'error',
+            }));
+        }
     };
 
     const renderStepContent = () => {
@@ -174,7 +242,7 @@ const DriverRegistrationFlowScreen = ({ navigation }) => {
                         data={form}
                         onChangeField={updateField}
                         onPrevious={() => setCurrentStep(1)}
-                        onNext={() => setCurrentStep(3)}
+                        onNext={goNext}
                     />
                 );
 
@@ -184,7 +252,7 @@ const DriverRegistrationFlowScreen = ({ navigation }) => {
                         data={form}
                         onUploadDocument={pickDocumentImage}
                         onTakeSelfie={takeSelfiePhoto}
-                        onNext={() => setCurrentStep(4)}
+                        onNext={goNext}
                     />
                 );
 
@@ -194,6 +262,7 @@ const DriverRegistrationFlowScreen = ({ navigation }) => {
                         data={form}
                         onChangeField={updateField}
                         onSubmit={handleFinalSubmit}
+                        loading={loading}
                     />
                 );
 

@@ -37,6 +37,7 @@ export default {
     accountTitle: "Account",
     userNamePlaceholder: "Marcus Sterling",
     userPhonePlaceholder: "+91 98765 43210",
+    myRides :'My Rides',
     editProfile: "Edit Profile",
     savedAddresses: "Saved Addresses",
     paymentMethods: "Payment Methods",

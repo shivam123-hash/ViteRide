@@ -42,7 +42,7 @@ export const ProfileOption = () => {
     return (
         <Stack.Navigator screenOptions={{ headerShown: false, animation: Platform.OS === 'ios' ? 'fade' : 'default' }} initialRouteName="Profile" >
             <Stack.Screen name='Profile' component={Profile} />
-            <Stack.Screen name='EditScreen' component={EditProfileScreen} />
+            <Stack.Screen name='EditProfile' component={EditProfileScreen} />
             <Stack.Screen name='TripHistoryScreen' component={TripHistoryScreen} />
             <Stack.Screen name='ActiveMission' component={MissionScreen} />
             <Stack.Screen name='HelpInfoScreen' component={HelpInfoScreen} />
@@ -72,7 +72,6 @@ const defaultTabBarStyle = {
 
 export default function DriverTabNavigator() {
     return (
-        <NavigationContainer>
             <Tab.Navigator
                 screenOptions={({ route }) => ({
                     headerShown: false,
@@ -122,7 +121,6 @@ export default function DriverTabNavigator() {
                     })}
                 />
             </Tab.Navigator>
-        </NavigationContainer>
     );
 }
 

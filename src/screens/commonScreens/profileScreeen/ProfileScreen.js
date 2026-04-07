@@ -16,28 +16,31 @@ import strings from "../../../units/CommonStrings";
 import { useTheme } from "../../../common/ThemeContest";
 import MenuRowItem from './components/MenuRowItem';
 import { useNavigation } from "@react-navigation/native";
-import { useDispatch,useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../../redux/features/auth/AuthSlice";
 import { getUserProfile } from "../../../redux/features/profile/ProfileSlice";
 import { clearUserData } from "../../../units/AsyncStorageManager";
-
 const ProfileScreen = () => {
 
     const { colors, fonts, metrics } = useTheme();
     const styles = getStyles(colors, fonts, metrics);
     const navigation = useNavigation();
     const dispatch = useDispatch();
-const { user, loading } = useSelector((state) => state.profile);
+    const { user, loading } = useSelector((state) => state.profile);
+    const { driverStatus, driverLoading } = useSelector((state) => state.driverHome);
+
+
+
 
     useEffect(() => {
         dispatch(getUserProfile());
     }, [dispatch]);
-
+    
     const profileOptions = [
-        { id: 1, title: strings.editProfile, icon: 'person', onPress: () => navigation.navigate('EditProfile') },
+        { id: 1, title: strings.editProfile, icon: 'person', onPress: () => navigation.navigate('EditProfile', { name: user?.name, phone: user?.phone, email: user?.email, city: user?.city }) },
         { id: 2, title: strings.savedAddresses, icon: 'location', onPress: () => navigation.navigate('SavedAddresses') },
         { id: 3, title: strings.paymentMethods, icon: 'wallet', onPress: () => console.log('Payments') },
-        { id: 4, title: strings.driverMode, icon: 'wallet', onPress: () => navigation.navigate('DriverRegistration') },
+        { id: 4, title: strings.driverMode, icon: 'car', onPress: () => navigation.navigate('DriverRegistration') },
 
     ];
     const securityOptions = [
@@ -47,14 +50,14 @@ const { user, loading } = useSelector((state) => state.profile);
         { id: 5, title: strings.settings, icon: 'settings', onPress: () => console.log('Settings') },
     ];
     const DriverOptions = [
-        { id: 1, title: strings.editProfile, icon: 'person', onPress: () => navigation.navigate("EditScreen") },
+        { id: 1, title: strings.editProfile, icon: 'person', onPress: () => navigation.navigate("EditScreen", { name: user?.name, phone: user?.phone, email: user?.email, city: user?.city }) },
         { id: 2, title: strings.tripHistorytitle, icon: 'location', onPress: () => navigation.navigate('TripHistoryScreen') },
         { id: 3, title: strings.activeMisssion, icon: 'wallet', onPress: () => navigation.navigate('ActiveMission') },
     ];
 
     const role = '2';
 
-     if (loading) {
+    if (loading) {
         return (
             <SafeAreaView style={styles.container}>
                 <CommonHeader
@@ -86,8 +89,8 @@ const { user, loading } = useSelector((state) => state.profile);
                             style={styles.profileImage}
                         />
                     </View>
-                    <Text style={styles.userName}>{user?.name }</Text>
-                    <Text style={styles.userPhone}>{user?.phone }</Text>
+                    <Text style={styles.userName}>{user?.name}</Text>
+                    <Text style={styles.userPhone}>{user?.phone}</Text>
                 </View>
                 <View style={styles.menuContainer}>
                     {role === "2" ? <View style={styles.card}>

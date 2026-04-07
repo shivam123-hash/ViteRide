@@ -16,7 +16,8 @@ const CommanInput = ({
   iconName,
   iconSize = 18,
   iconColor = '#fff',
-  textInput
+  textInput,
+  enabled = true
 }) => {
   const [showPassword, setShowPassword] = useState(false);
 
@@ -48,6 +49,7 @@ const CommanInput = ({
         </TouchableOpacity>
       )}
       <TextInput
+        editable={enabled}
         style={[styles.input, textInput]}
         placeholder={placeholder}
         placeholderTextColor={placeholderTextColor}
@@ -56,7 +58,7 @@ const CommanInput = ({
         secureTextEntry={isPasswordField && !showPassword}
         keyboardType={keyboardType}
       />
-       {isPasswordField && (
+      {isPasswordField && (
         <TouchableOpacity onPress={handleTogglePassword}>
           <Ionicons
             name={showPassword ? 'eye' : 'eye-off'}
@@ -84,7 +86,7 @@ const styles = StyleSheet.create({
     // marginTop: 10,
     width: '100%',
     backgroundColor: '#F1F4F8',
-    justifyContent:'space-between'
+    justifyContent: 'space-between'
   },
   input: {
     color: '#000',

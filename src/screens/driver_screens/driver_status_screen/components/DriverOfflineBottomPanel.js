@@ -2,12 +2,11 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import Ionicons from '@react-native-vector-icons/ionicons';
 import { RFValue } from 'react-native-responsive-fontsize';
+import { useTheme } from '../../../../common/ThemeContest';
+import strings from '../../../../units/CommonStrings';
+import CommonButton from '../../../../components/CommonBtn';
 
-import { useTheme } from '../../../common/ThemeContest';
-import strings from '../../../units/CommonStrings';
-import CommonButton from '../../../components/CommonBtn';
-
-const DriverOfflineBottomPanel = () => {
+const DriverOfflineBottomPanel = ({ onPress, loading }) => {
 
     const { colors, fonts, metrics } = useTheme();
     const styles = getStyles(colors, fonts, metrics);
@@ -37,7 +36,7 @@ const DriverOfflineBottomPanel = () => {
                 </View>
             </View>
             <CommonButton
-                title={strings.goOnlineBtn}
+                title={loading ? 'Updating...' : strings.goOnlineBtn}
                 backgroundColor={colors.primary}
                 textColor={colors.white}
                 height={metrics.windowHeight * 0.075}
@@ -47,7 +46,7 @@ const DriverOfflineBottomPanel = () => {
                 containerStyle={styles.btnContainer}
                 textStyle={styles.btnText}
                 leftComponent={<View style={styles.btnDot} />}
-                onPress={() => console.log('Go Online Pressed')}
+                onPress={() => onPress()}
             />
             <View style={styles.offlinePill}>
                 <Text style={styles.offlinePillText}>{strings.currentlyOfflineText}</Text>

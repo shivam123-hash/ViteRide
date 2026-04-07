@@ -4,9 +4,9 @@ import Ionicons from '@react-native-vector-icons/ionicons';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { useTheme } from '../../../../common/ThemeContest';
 import strings from '../../../../units/CommonStrings';
-import CommonButton from '../../../../components/CommonBtn'; 
+import CommonButton from '../../../../components/CommonBtn';
 
-const DriverOnlineBottomOverlay = () => {
+const DriverOnlineBottomOverlay = ({ onPress, loading }) => {
     const { colors, fonts, metrics } = useTheme();
     const styles = getStyles(colors, fonts, metrics);
 
@@ -44,7 +44,7 @@ const DriverOnlineBottomOverlay = () => {
                     </View>
                 </View>
                 <CommonButton
-                    title={strings.goOfflineBtn}
+                    title={loading ? 'Updating...' : strings.goOfflineBtn}
                     backgroundColor={colors.primary}
                     textColor={colors.white}
                     height={metrics.windowHeight * 0.065}
@@ -55,7 +55,7 @@ const DriverOnlineBottomOverlay = () => {
                     rightComponent={
                         <Ionicons name="power" size={metrics.iconSize.medium} color={colors.white} style={styles.powerIcon} />
                     }
-                    onPress={() => console.log('Go Offline Pressed')}
+                    onPress={() => onPress()}
                 />
             </View>
 

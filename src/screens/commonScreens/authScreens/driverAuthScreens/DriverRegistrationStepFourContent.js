@@ -17,6 +17,7 @@ const DriverRegistrationStepFourContent = ({
     data,
     onChangeField,
     onSubmit,
+    loading
 }) => {
     const { colors, fonts } = useTheme();
     const styles = useMemo(() => createStyles(colors, fonts), [colors, fonts]);
@@ -83,7 +84,7 @@ const DriverRegistrationStepFourContent = ({
             </View>
 
             <CommonBtn
-                title={strings.verifyAndSubmit}
+                title={loading ? 'Verifying & Submitting...' : strings.verifyAndSubmit}
                 backgroundColor={colors.textPrimary}
                 textColor={colors.white}
                 height={56}

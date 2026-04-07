@@ -18,18 +18,64 @@ import CommonInput from "../../../../components/CommonInput";
 import CommonButton from "../../../../components/CommonBtn";
 import strings from "../../../../units/CommonStrings";
 import { useTheme } from "../../../../common/ThemeContest";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import { useDispatch, useSelector } from "react-redux";
+import { editUserProfile } from "../../../../redux/features/profile/EditProfileSlice";
+import { getUserProfile } from "../../../../redux/features/profile/ProfileSlice";
+import { showMessage } from "../../../../redux/features/messageSlice/messageSlice";
 
 const EditProfileScreen = () => {
 
+    const route = useRoute();
+    const navigation = useNavigation();
+    const dispatch = useDispatch();
     const { colors, fonts, metrics } = useTheme();
     const styles = getStyles(colors, fonts, metrics);
     const [profilePic, setProfilePic] = useState('https://randomuser.me/api/portraits/men/32.jpg');
-    const [fullName, setFullName] = useState(strings.defaultName);
-    const [phone, setPhone] = useState(strings.defaultPhone);
-    const [email, setEmail] = useState(strings.defaultEmail);
-    const [homeCity, setHomeCity] = useState(strings.defaultCity);
-    const navigation = useNavigation();
+    const [fullName, setFullName] = useState(route.params?.name || null);
+    const [phone, setPhone] = useState(route.params?.phone || null);
+    const [email, setEmail] = useState(route.params?.email || null);
+    const [homeCity, setHomeCity] = useState(route.params?.city || null);
+
+    const { loading } = useSelector((state) => state.editProfile);
+
+
+    const handleEditProfile = async () => {
+        if (loading) return;
+
+        if (!fullName?.trim() || !email?.trim()) {
+            dispatch(showMessage({ text: 'Please fill all required fields.', type: 'error' }));
+            return;
+        }
+
+        try {
+            const response = await dispatch(
+                editUserProfile({
+                    name: fullName,
+                    email: email,
+                    phone: phone,
+                    city: homeCity,
+                    profilePic: profilePic,
+                })
+            ).unwrap();
+
+            dispatch(showMessage({
+                text: response?.message || "Profile updated successfully!",
+                type: "success",
+            }));
+
+            dispatch(getUserProfile());
+            navigation.goBack();
+
+        } catch (error) {
+            dispatch(showMessage({
+                text: typeof error === "string" ? error : "Unable to update profile.",
+                type: "error",
+            }));
+        }
+    };
+
+
 
     const handleImagePick = () => {
         ImagePicker.openPicker({
@@ -47,7 +93,7 @@ const EditProfileScreen = () => {
     };
 
     return (
-        <SafeAreaView style={styles.container}> 
+        <SafeAreaView style={styles.container}>
             <CommonHeader
                 title={strings.editProfileTitle}
                 onBackPress={() => navigation.goBack()}
@@ -92,6 +138,7 @@ const EditProfileScreen = () => {
                             <CommonInput
                                 value={phone}
                                 onChangeText={setPhone}
+                                enabled={false}
                                 placeholder={strings.phoneLabel}
                                 placeholderTextColor={colors.textLight}
                                 keyboardType="phone-pad"
@@ -140,7 +187,7 @@ const EditProfileScreen = () => {
                         <Ionicons name="chevron-forward" size={metrics.iconSize.medium} color="#D1D5DB" />
                     </TouchableOpacity> */}
                     <CommonButton
-                        title={strings.saveChanges}
+                        title={loading ? "Saving..." : strings.saveChanges}
                         backgroundColor={colors.primary}
                         textColor={colors.white}
                         height={metrics.windowHeight * 0.07}
@@ -151,7 +198,7 @@ const EditProfileScreen = () => {
                         rightComponent={
                             <Ionicons name="checkmark-done" size={metrics.iconSize.medium} color={colors.white} style={styles.btnIconRight} />
                         }
-                        onPress={() => console.log("Save Changes Pressed")}
+                        onPress={() => handleEditProfile()}
                     />
                 </ScrollView>
             </KeyboardAvoidingView>
