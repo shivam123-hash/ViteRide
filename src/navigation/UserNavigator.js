@@ -14,6 +14,7 @@ import LoginScreen from '../screens/commonScreens/authScreens/LoginScreen';
 import DriverRegistrationFlowScreen from '../screens/commonScreens/authScreens/driverAuthScreens/DriverRegistrationFlowScreen';
 import SavedAddressesScreen from '../screens/commonScreens/profileScreeen/components/SavedAddressesScreen';
 import HelpSupportScreen from '../screens/commonScreens/profileScreeen/HelpSupportScreen';
+import TripHistoryListScreen from '../screens/rider_screens/rides_history/TripHistoryListScreen'
 
 const Stack = createNativeStackNavigator();
 
@@ -34,6 +35,7 @@ export default function UserNavigator() {
       <Stack.Screen name="TripSummary" component={TripSummaryScreen} />
       <Stack.Screen name="DriverRegistration" component={DriverRegistrationFlowScreen} />
       <Stack.Screen name="Login" component={LoginScreen} />
+      <Stack.Screen name="MyRidesHistoryList" component={TripHistoryListScreen} />
     </Stack.Navigator>
   );
 }

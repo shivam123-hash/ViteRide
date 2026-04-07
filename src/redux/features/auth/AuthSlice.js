@@ -1,20 +1,15 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { loginService, registerService, verifyOtpService } from "../../../services/AuthServices";
+import { loginService, logoutService, registerService, verifyOtpService } from "../../../services/AuthServices";
 import { clearUserData, getUserData, saveUserData } from "../../../units/AsyncStorageManager";
 import { TokenService } from "../../../units/TokenServices";
 
 export const login = createAsyncThunk(
     'auth/login',
     async (userData, { rejectWithValue, dispatch }) => {
-        console.log(userData, 'userData+++=')
         try {
             const response = await loginService(userData);
-            // saveUserData(response.data);
-            console.log(response, 'response_++__+__+_')
-            console.log(response.data, 'response_++__+__+_')
             return response.data;
         } catch (error) {
-            console.log(error, 'error++++_++_')
             return rejectWithValue(
                 error?.response?.data?.message ||
                 error?.message ||
@@ -31,7 +26,6 @@ export const register = createAsyncThunk(
             const response = await registerService(userData);
             return response.data;
         } catch (error) {
-            console.log(error, 'error+++++++++')
             return rejectWithValue(
                 error?.response?.data?.message ||
                 error?.message ||
@@ -64,11 +58,8 @@ export const loadInitialState = createAsyncThunk(
 export const verifyOtp = createAsyncThunk(
     "auth/verifyOtp",
     async (payload, { rejectWithValue }) => {
-        console.log(payload, 'payload++++++')
         try {
-            console.log('Verifying OTP with payload:', payload);
             const response = await verifyOtpService(payload);
-            console.log('OTP verification response:', response);
             const data = response?.data || {};
             const accessToken =
                 data?.accessToken || data?.access_token || data?.token || null;
@@ -85,14 +76,30 @@ export const verifyOtp = createAsyncThunk(
                 accessToken,
                 refreshToken,
             });
-            console.log('OTP verification data:', data);
             return data;
         } catch (error) {
-            console.log(error, 'erroe++++')
             return rejectWithValue(
                 error?.response?.data?.message ||
                 error?.message ||
                 "OTP Verification Failed"
+            );
+        }
+    }
+);
+
+export const logoutApi = createAsyncThunk(
+    'auth/logout',
+    async (_, { rejectWithValue }) => {
+        try {
+            const response = await logoutService();
+            await clearUserData();
+            return response.data;
+        } catch (error) {
+            await clearUserData();
+            return rejectWithValue(
+                error?.response?.data?.message ||
+                error?.message ||
+                'Logout Failed'
             );
         }
     }
@@ -116,15 +123,15 @@ const authSlice = createSlice({
     name: 'auth',
     initialState,
     reducers: {
-        logout: (state) => {
-            clearUserData();
-            state.isLoggedIn = false;
-            state.user = null;
-            state.role = null;
-            state.accessToken = null;
-            state.error = null;
-            state.message = null;
-        },
+        // logout: (state) => {
+        //     clearUserData();
+        //     state.isLoggedIn = false;
+        //     state.user = null;
+        //     state.role = null;
+        //     state.accessToken = null;
+        //     state.error = null;
+        //     state.message = null;
+        // },
         resetAuthError: (state) => {
             state.error = null;
             state.message = null;
@@ -201,8 +208,29 @@ const authSlice = createSlice({
                 state.isLoggedIn = false;
                 state.error = action.payload || "OTP verification failed";
             })
+            .addCase(logoutApi.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(logoutApi.fulfilled, (state) => {
+                state.loading = false;
+                state.isLoggedIn = false;
+                state.user = null;
+                state.role = null;
+                state.accessToken = null;
+                state.error = null;
+                state.message = null;
+            })
+            .addCase(logoutApi.rejected, (state) => {
+                state.loading = false;
+                state.isLoggedIn = false;
+                state.user = null;
+                state.role = null;
+                state.accessToken = null;
+                state.error = null;
+                state.message = null;
+            });
     },
 });
 
-export const { logout, resetAuthError } = authSlice.actions;
+export const { resetAuthError } = authSlice.actions;
 export default authSlice.reducer;

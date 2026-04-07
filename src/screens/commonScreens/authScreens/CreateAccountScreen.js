@@ -18,9 +18,11 @@ import CommonButton from "../../../components/CommonBtn";
 import CommonInput from "../../../components/CommonInput";
 import strings from "../../../units/CommonStrings";
 import { useTheme } from "../../../common/ThemeContest";
-import { register } from "../../../redux/features/auth/AuthSlice"; // <-- Added register action
+import { register } from "../../../redux/features/auth/AuthSlice";
+import { showMessage } from "../../../redux/features/messageSlice/messageSlice";
 
 const CreateAccountScreen = () => {
+    
     const navigation = useNavigation();
     const dispatch = useDispatch();
     const { colors, fonts, metrics } = useTheme();
@@ -42,28 +44,28 @@ const CreateAccountScreen = () => {
         const payload = {
             name: name.trim(),
             phone: `+91${phone.trim()}`,
-            email: email.trim() || undefined, // Send email if provided, otherwise undefined
+            email: email.trim() || undefined,
         };
-
         try {
-            // 3. Dispatch Register Action and wait for response
             const response = await dispatch(register(payload)).unwrap();
             console.log(response, 'response++++++++')
-            // 4. Handle Success
-            // Swagger response returns: { message: "...", dev_otp: "..." }
-            Alert.alert("Success", response.message || "OTP sent successfully!");
-
-            // 5. Navigate to OTP screen, passing the phone and dev_otp so you can use it there
+            dispatch(
+                showMessage({
+                    text: response?.message || "OTP Sent successfully!",
+                    type: "success",
+                })
+            );
             navigation.navigate("OTP", {
                 phone: `+91${phone.trim()}`,
                 devOtp: response.dev_otp,
                 context: "register",
                 registerData: payload
             });
-
         } catch (error) {
-            // 6. Handle Failure
-            Alert.alert("Registration Failed", error || "Something went wrong. Please try again.");
+            dispatch(showMessage({
+                text: typeof error === "string" ? error : "Unable to send OTP.",
+                type: "error",
+            }))
         }
     };
 

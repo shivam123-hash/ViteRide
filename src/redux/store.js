@@ -5,6 +5,7 @@ import messageReducer from './features/messageSlice/messageSlice';
 import EditProfilReducer from './features/profile/EditProfileSlice';
 import becomeDriverReducer from './features/profile/BecomeDriverSlice';
 import driverHomeReducer from './features/driverHome/DriverHomeSlice';
+import rideSliceReducer from './features/profile/MyRidesSlice';
 
 const store = configureStore({
     reducer: {
@@ -14,6 +15,7 @@ const store = configureStore({
         editProfile: EditProfilReducer,
         becomeDriver: becomeDriverReducer,
         driverHome: driverHomeReducer,
+        myRides: rideSliceReducer
     }
 });
 

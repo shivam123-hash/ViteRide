@@ -20,22 +20,25 @@ import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../../redux/features/auth/AuthSlice";
 import { getUserProfile } from "../../../redux/features/profile/ProfileSlice";
 import { clearUserData } from "../../../units/AsyncStorageManager";
+
 const ProfileScreen = () => {
 
     const { colors, fonts, metrics } = useTheme();
     const styles = getStyles(colors, fonts, metrics);
     const navigation = useNavigation();
     const dispatch = useDispatch();
-    const { user, loading } = useSelector((state) => state.profile);
+    const { user, loading: profileLoading } = useSelector((state) => state.profile);
     const { driverStatus, driverLoading } = useSelector((state) => state.driverHome);
 
 
 
+    const { loading: authLoading } = useSelector((state) => state.auth);
+    // const { user, loading: profileLoading } = useSelector((state) => state.profile);
 
     useEffect(() => {
         dispatch(getUserProfile());
     }, [dispatch]);
-    
+
     const profileOptions = [
         { id: 1, title: strings.editProfile, icon: 'person', onPress: () => navigation.navigate('EditProfile', { name: user?.name, phone: user?.phone, email: user?.email, city: user?.city }) },
         { id: 2, title: strings.savedAddresses, icon: 'location', onPress: () => navigation.navigate('SavedAddresses') },
@@ -47,7 +50,7 @@ const ProfileScreen = () => {
         { id: 4, title: strings.emergencyContacts, icon: 'id-card', onPress: () => navigation.navigate('HelpSupport') },
     ];
     const appOptions = [
-        { id: 5, title: strings.settings, icon: 'settings', onPress: () => console.log('Settings') },
+        { id: 5, title: strings.myRides, icon: 'car-sport', onPress: () => navigation.navigate("MyRidesHistoryList") },
     ];
     const DriverOptions = [
         { id: 1, title: strings.editProfile, icon: 'person', onPress: () => navigation.navigate("EditScreen", { name: user?.name, phone: user?.phone, email: user?.email, city: user?.city }) },
@@ -58,84 +61,96 @@ const ProfileScreen = () => {
     const role = '2';
 
     if (loading) {
+        const handleLogout = async () => {
+            if (authLoading) return;
+            try {
+                const res = await dispatch(logoutApi()).unwrap();
+                dispatch(showMessage({ text: res?.message || "Logged out successfully", type: "success" }));
+            } catch (error) {
+                dispatch(showMessage({ text: "Logged out locally", type: "success" }));
+            }
+        };
+
+        if (profileLoading) {
+            return (
+                <SafeAreaView style={styles.container}>
+                    <CommonHeader
+                        title={strings.accountTitle}
+                        onBackPress={() => navigation.goBack()}
+                    />
+                    <View style={styles.loaderContainer}>
+                        <ActivityIndicator size='large' color={colors.primary} />
+                    </View>
+                </SafeAreaView>
+            );
+        }
+
         return (
             <SafeAreaView style={styles.container}>
                 <CommonHeader
                     title={strings.accountTitle}
                     onBackPress={() => navigation.goBack()}
                 />
-                <View style={styles.loaderContainer}>
-                    <ActivityIndicator size='large' color={colors.primary} />
-                </View>
+
+                <ScrollView
+                    contentContainerStyle={styles.scrollContent}
+                    showsVerticalScrollIndicator={false}
+                >
+                    <View style={styles.profileSection}>
+                        <View style={styles.profileImageWrapper}>
+                            <Image
+                                source={{ uri: 'https://randomuser.me/api/portraits/men/32.jpg' }}
+                                style={styles.profileImage}
+                            />
+                        </View>
+                        <Text style={styles.userName}>{user?.name}</Text>
+                        <Text style={styles.userPhone}>{user?.phone}</Text>
+                    </View>
+                    <View style={styles.menuContainer}>
+                        {role === "2" ? <View style={styles.card}>
+                            {profileOptions.map((item, index) => (
+                                <MenuRowItem key={item.id} item={item} isLast={index === profileOptions.length - 1} />
+                            ))}
+                        </View> : <View style={styles.card}>
+                            {DriverOptions.map((item, index) => (
+                                <MenuRowItem key={item.id} item={item} isLast={index === profileOptions.length - 1} />
+                            ))}
+                        </View>}
+                        {role === "2" && <View style={styles.card}>
+                            {securityOptions.map((item, index) => (
+                                <MenuRowItem key={item.id} item={item} isLast={index === securityOptions.length - 1} />
+                            ))}
+                        </View>}
+                        <View style={styles.card}>
+                            {appOptions.map((item, index) => (
+                                <MenuRowItem key={item.id} item={item} isLast={index === appOptions.length - 1} />
+                            ))}
+                        </View>
+                    </View>
+                    <CommonButton
+                        title={strings.logout}
+                        backgroundColor="#F3F4F6"
+                        textColor={colors.danger}
+                        height={metrics.windowHeight * 0.065}
+                        borderRadius={metrics.borderRadius.high * 1.2}
+                        marginTop={metrics.margin.massive}
+                        elevation={0}
+                        textStyle={styles.logoutText}
+                        leftComponent={
+                            <Ionicons
+                                name="log-out-outline"
+                                size={metrics.iconSize.high}
+                                color={colors.danger}
+                                style={styles.logoutIcon}
+                            />
+                        }
+                        onPress={handleLogout}
+                    />
+                </ScrollView>
             </SafeAreaView>
         );
-    }
-
-    return (
-        <SafeAreaView style={styles.container}>
-            <CommonHeader
-                title={strings.accountTitle}
-                onBackPress={() => navigation.goBack()}
-            />
-
-            <ScrollView
-                contentContainerStyle={styles.scrollContent}
-                showsVerticalScrollIndicator={false}
-            >
-                <View style={styles.profileSection}>
-                    <View style={styles.profileImageWrapper}>
-                        <Image
-                            source={{ uri: 'https://randomuser.me/api/portraits/men/32.jpg' }}
-                            style={styles.profileImage}
-                        />
-                    </View>
-                    <Text style={styles.userName}>{user?.name}</Text>
-                    <Text style={styles.userPhone}>{user?.phone}</Text>
-                </View>
-                <View style={styles.menuContainer}>
-                    {role === "2" ? <View style={styles.card}>
-                        {profileOptions.map((item, index) => (
-                            <MenuRowItem key={item.id} item={item} isLast={index === profileOptions.length - 1} />
-                        ))}
-                    </View> : <View style={styles.card}>
-                        {DriverOptions.map((item, index) => (
-                            <MenuRowItem key={item.id} item={item} isLast={index === profileOptions.length - 1} />
-                        ))}
-                    </View>}
-                    {role === "2" && <View style={styles.card}>
-                        {securityOptions.map((item, index) => (
-                            <MenuRowItem key={item.id} item={item} isLast={index === securityOptions.length - 1} />
-                        ))}
-                    </View>}
-                    <View style={styles.card}>
-                        {appOptions.map((item, index) => (
-                            <MenuRowItem key={item.id} item={item} isLast={index === appOptions.length - 1} />
-                        ))}
-                    </View>
-                </View>
-                <CommonButton
-                    title={strings.logout}
-                    backgroundColor="#F3F4F6"
-                    textColor={colors.danger}
-                    height={metrics.windowHeight * 0.065}
-                    borderRadius={metrics.borderRadius.high * 1.2}
-                    marginTop={metrics.margin.massive}
-                    elevation={0}
-                    textStyle={styles.logoutText}
-                    leftComponent={
-                        <Ionicons
-                            name="log-out-outline"
-                            size={metrics.iconSize.high}
-                            color={colors.danger}
-                            style={styles.logoutIcon}
-                        />
-                    }
-                    onPress={() => dispatch(logout())}
-                />
-            </ScrollView>
-        </SafeAreaView>
-    );
-};
+    };
+}
 
 export default ProfileScreen;
 
@@ -236,4 +251,4 @@ const getStyles = (colors, fonts, metrics) => StyleSheet.create({
     logoutIcon: {
         marginRight: metrics.margin.low,
     }
-});
+})

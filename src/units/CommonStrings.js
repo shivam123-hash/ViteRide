@@ -43,7 +43,7 @@ export default {
     paymentMethods: "Payment Methods",
     driverMode:"Driver Mode",
     emergencyContacts: "Emergency Contacts",
-    settings: "Settings",
+    myRides: "MyRides",
     logout: "Logout",
     tripHistorytitle: "Trip History",
     activeMisssion: "Active Missions",
